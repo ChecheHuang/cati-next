@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+model Admin {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Campaign {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  name       String
+  questions  Json
+  sort       Int?
+  begin_date DateTime
+  end_date   DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name_list Name_list[] @relation("CampaignNameList")
+}
+
+model Phone_template {
+  id            Int     @id @default(autoincrement())
+  template_id   String
+  template_name String
+  name          String
+  phone         String
+  valid         Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name_list Name_list[] @relation("NameListPhoneTemplate")
+}
+
+model Name_list {
+  id                Int      @id @default(autoincrement())
+  campaign_id       Int
+  phone_template_id Int
+  name              String
+  phone             String
+  agent             String?
+  answers           Json
+  sort              Int?
+  reserve_date      DateTime
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  campaign       Campaign       @relation("CampaignNameList", fields: [campaign_id], references: [id])
+  phone_template Phone_template @relation("NameListPhoneTemplate", fields: [phone_template_id], references: [id])
+
+  @@index([campaign_id])
+  @@index([phone_template_id])
+}
