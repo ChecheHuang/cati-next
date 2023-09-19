@@ -1,4 +1,4 @@
-import TemplatePhoneClient from './components/TemplatePhoneClient'
+import TemplatePhoneClient from './components/TemplatePhone'
 import prismadb from '@/lib/prismadb'
 
 const serverQuery = async () => {

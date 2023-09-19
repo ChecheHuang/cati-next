@@ -8,11 +8,11 @@ import { Separator } from '@/components/ui/separator'
 import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-interface TemplatePhoneClientProps {
+interface TemplatePhoneProps {
   data: TemplatePhoneColumn[]
 }
 
-const TemplatePhoneClient: React.FC<TemplatePhoneClientProps> = ({ data }) => {
+const TemplatePhone: React.FC<TemplatePhoneProps> = ({ data }) => {
   const router = useRouter()
 
   return (
@@ -31,4 +31,4 @@ const TemplatePhoneClient: React.FC<TemplatePhoneClientProps> = ({ data }) => {
   )
 }
 
-export default TemplatePhoneClient
+export default TemplatePhone

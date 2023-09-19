@@ -9,7 +9,7 @@ export const metadata = {
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-secondary to-primary">
+    <div className="h-screen w-screen  bg-gradient-to-br from-secondary to-primary">
       <Header />
       <div className="flex h-[calc(100vh-58px)]   ">
         <Sidebar />

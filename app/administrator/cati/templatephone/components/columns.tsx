@@ -1,5 +1,6 @@
 'use client'
 
+import { CellAction } from './cell-action'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import Link from 'next/link'
@@ -42,9 +43,7 @@ export const columns: ColumnDef<TemplatePhoneColumn>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      // console.log(row)
-      return <></>
-    },
+    header: '操作',
+    cell: ({ row }) => <CellAction data={row.original} />,
   },
 ]
