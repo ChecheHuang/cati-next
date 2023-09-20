@@ -1,7 +1,8 @@
 import TemplatePhoneClient from './components/TemplatePhone'
 import prismadb from '@/lib/prismadb'
+import type { Metadata } from 'next'
 
-const serverQuery = async () => {
+export const getAllTemplatePhone = async () => {
   const data = await prismadb.phone_template.groupBy({
     by: ['template_id', 'template_name', 'created_at'],
     _count: true,
@@ -17,8 +18,13 @@ const serverQuery = async () => {
   }))
 }
 
+export const metadata: Metadata = {
+  title: '電話簿管理',
+  description: '電訪系統電話簿管理',
+}
+
 const TemplatePhone = async () => {
-  const data = await serverQuery()
+  const data = await getAllTemplatePhone()
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

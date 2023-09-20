@@ -1,5 +1,5 @@
 import './globals.css'
-import { QueryProvider } from '@/components/providers/queryProvider'
+import QueryProvider from '@/components/providers/queryProvider'
 import { SocketProvider } from '@/components/providers/socketProvider'
 import { ThemeProvider } from '@/components/providers/themeProvider'
 import ToastProvider from '@/components/providers/toastProvider'
