@@ -7,22 +7,30 @@ import { SessionProvider } from 'next-auth/react'
 import React, { useState } from 'react'
 import superjson from 'superjson'
 
+const defaultQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+const createClient = trpcClient.createClient({
+  transformer: superjson,
+  links: [
+    httpBatchLink({
+      url: getUrl(),
+    }),
+  ],
+})
+
 export default function QueryProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [queryClient] = useState(() => new QueryClient({}))
-  const [client] = useState(() =>
-    trpcClient.createClient({
-      transformer: superjson,
-      links: [
-        httpBatchLink({
-          url: 'http://localhost:3000/api/trpc',
-        }),
-      ],
-    }),
-  )
+  const [queryClient] = useState(defaultQueryClient)
+  const [client] = useState(createClient)
   return (
     <trpcClient.Provider client={client} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -30,4 +38,13 @@ export default function QueryProvider({
       </QueryClientProvider>
     </trpcClient.Provider>
   )
+}
+function getBaseUrl() {
+  if (typeof window !== 'undefined') return ''
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return 'http://localhost:3000'
+}
+
+export function getUrl() {
+  return getBaseUrl() + '/api/trpc'
 }

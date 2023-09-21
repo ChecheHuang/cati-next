@@ -1,6 +1,7 @@
 import { router, publicProcedure, protectedProcedure } from '../trpc'
 import prismadb from '@/lib/prismadb'
 import { fakerZH_TW } from '@faker-js/faker'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const templatePhoneProcedure = publicProcedure.input(
@@ -8,6 +9,9 @@ const templatePhoneProcedure = publicProcedure.input(
 )
 
 export const templatePhoneRouter = router({
+  options: publicProcedure.query(() => {
+    return ['活動123', '活動2', '活動3']
+  }),
   create: protectedProcedure.mutation(async ({ input }) => {
     const lastData = await prismadb.phone_template.findFirst({
       select: {
@@ -32,6 +36,7 @@ export const templatePhoneRouter = router({
         phone,
       },
     })
+    revalidatePath('/administrator/cati/templatephone')
 
     return create
   }),

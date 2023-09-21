@@ -5,6 +5,7 @@ import AutoCompleteSelect from '@/components/AutoCompleteSelect'
 import { Modal } from '@/components/modals/modal'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
+import trpcClient from '@/lib/trpc/trpcClient'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useState } from 'react'
@@ -17,6 +18,8 @@ const formSchema = z.object({
 
 export const PhoneModal = () => {
   const phoneModal = usePhoneModal()
+  // const options = ['活動1', '活動2', '活動3']
+  const { data: options = [] } = trpcClient.templatePhone.options.useQuery()
 
   const [loading, setLoading] = useState(false)
 
@@ -59,7 +62,7 @@ export const PhoneModal = () => {
                   <AutoCompleteSelect<FormType>
                     form={form}
                     label="選擇活動"
-                    options={['活動1', '活動2', '活動3']}
+                    options={options}
                     name="name"
                     placeholder="選擇活動"
                     commandPlaceholder="尋找活動"

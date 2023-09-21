@@ -2,6 +2,8 @@ import TemplatePhoneClient from './components/TemplatePhone'
 import prismadb from '@/lib/prismadb'
 import type { Metadata } from 'next'
 
+// export const revalidate = 1
+
 export const getAllTemplatePhone = async () => {
   const data = await prismadb.phone_template.groupBy({
     by: ['template_id', 'template_name', 'created_at'],
