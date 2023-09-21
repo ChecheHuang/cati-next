@@ -1,4 +1,4 @@
-import { router, publicProcedure, protectedProcedure } from '../trpc'
+import { router, publicProcedure  } from '../trpc'
 import prismadb from '@/lib/prismadb'
 import { fakerZH_TW } from '@faker-js/faker'
 import { revalidatePath } from 'next/cache'
@@ -9,10 +9,28 @@ const templatePhoneProcedure = publicProcedure.input(
 )
 
 export const templatePhoneRouter = router({
+  get: publicProcedure.query(async () => {
+    const data = await prismadb.phone_template.groupBy({
+      by: ['template_id', 'template_name', 'created_at'],
+      _count: true,
+      where: {
+        valid: true,
+      },
+      orderBy: {
+        created_at: 'asc',
+      },
+    })
+    return data.map((item) => ({
+      id: item.template_id,
+      templateName: item.template_name,
+      count: item._count,
+      createdAt: item.created_at,
+    }))
+  }),
   options: publicProcedure.query(() => {
     return ['活動123', '活動2', '活動3']
   }),
-  create: protectedProcedure.mutation(async ({ input }) => {
+  create: publicProcedure.mutation(async ({ input }) => {
     const lastData = await prismadb.phone_template.findFirst({
       select: {
         template_id: true,

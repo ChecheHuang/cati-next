@@ -42,7 +42,6 @@ const phoneTemplateSeed = async () => {
 }
 
 const adminSeed = async () => {
-  console.log('adminSeed')
   const hashedPassword = await bcrypt.hash('password', 12)
   await prisma.admin.create({
     data: {

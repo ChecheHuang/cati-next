@@ -8,7 +8,7 @@ function Cati() {
   ]
 
   return (
-    <div className="flex w-full flex-wrap  justify-center gap-4">
+    <div className="flex w-full flex-wrap   gap-4">
       {agentArr.map(({ agent, status, phone }) => {
         return (
           <div
