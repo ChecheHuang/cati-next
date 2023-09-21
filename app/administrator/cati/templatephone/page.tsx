@@ -9,6 +9,9 @@ export const getAllTemplatePhone = async () => {
     where: {
       valid: true,
     },
+    orderBy: {
+      created_at: 'asc',
+    },
   })
   return data.map((item) => ({
     id: item.template_id,

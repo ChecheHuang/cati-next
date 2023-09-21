@@ -12,7 +12,7 @@ const reset = async () => {
   await prisma.$queryRaw`ALTER TABLE phone_template AUTO_INCREMENT = 1;`
 }
 const phoneTemplateSeed = async () => {
-  const idLength = 12
+  const idLength = 1
   const dataRandomLength = 100
 
   const templateData = []

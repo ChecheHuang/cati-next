@@ -14,6 +14,10 @@ export type TemplatePhoneColumn = {
 
 export const columns: ColumnDef<TemplatePhoneColumn>[] = [
   {
+    accessorKey: 'id',
+    header: 'ID',
+  },
+  {
     accessorKey: 'templateName',
     header: '電話簿名稱',
     cell: ({ row }) => {

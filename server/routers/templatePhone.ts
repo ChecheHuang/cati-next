@@ -1,4 +1,4 @@
-import { router, publicProcedure } from '../trpc'
+import { router, publicProcedure, protectedProcedure } from '../trpc'
 import prismadb from '@/lib/prismadb'
 import { fakerZH_TW } from '@faker-js/faker'
 import { z } from 'zod'
@@ -8,7 +8,7 @@ const templatePhoneProcedure = publicProcedure.input(
 )
 
 export const templatePhoneRouter = router({
-  create: publicProcedure.mutation(async ({ input }) => {
+  create: protectedProcedure.mutation(async ({ input }) => {
     const lastData = await prismadb.phone_template.findFirst({
       select: {
         template_id: true,
@@ -33,6 +33,6 @@ export const templatePhoneRouter = router({
       },
     })
 
-    return 'success'
+    return create
   }),
 })

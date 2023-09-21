@@ -28,7 +28,7 @@ function AuthForm() {
   const router = useRouter()
   useEffect(() => {
     if (session?.status === 'authenticated') {
-      //  router.push('/administrator/cati')
+      router.push('/administrator/cati/status')
       console.log('已登入')
     }
   }, [session?.status, router])
