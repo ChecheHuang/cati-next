@@ -11,7 +11,7 @@ const Client: React.FC = () => {
   const create = trpcClient.templatePhone.create.useMutation({
     onSettled: () => {
       router.refresh()
-      router.push('/administrator/cati/templatephone')
+      // router.push('/administrator/cati/templatephone')
     },
     onSuccess: () => toast.success('新增成功'),
     onError: () => toast.error('新增失敗'),

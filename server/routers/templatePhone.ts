@@ -81,4 +81,18 @@ export const templatePhoneRouter = router({
 
     return create
   }),
+  update: publicProcedure
+    .input(z.object({ id: z.number(), valid: z.boolean() }))
+    .mutation(async ({ input }) => {
+      await prismadb.phone_template.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          valid: input.valid,
+        },
+      })
+
+      return true
+    }),
 })

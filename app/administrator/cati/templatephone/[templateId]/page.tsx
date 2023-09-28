@@ -1,6 +1,7 @@
 import { getAllTemplatePhone } from '../page'
 import Client from './Client'
-import { Button, buttonVariants } from '@/components/ui/button'
+import ClientSwitch from './_components/ClientSwitch'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -11,7 +12,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import trpcServer from '@/lib/trpc/trpcServer'
-import { cn } from '@/lib/utils'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -60,7 +60,7 @@ async function TemplatePhoneByIdPage({
 
   return (
     <div>
-      {/* <Client /> */}
+      <Client />
 
       <Table>
         <TableCaption className="space-x-2">
@@ -97,7 +97,9 @@ async function TemplatePhoneByIdPage({
               <TableCell>{id}</TableCell>
               <TableCell>{name}</TableCell>
               <TableCell>{phone}</TableCell>
-              <TableCell>{valid}</TableCell>
+              <TableCell>
+                <ClientSwitch id={id} checked={valid} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
