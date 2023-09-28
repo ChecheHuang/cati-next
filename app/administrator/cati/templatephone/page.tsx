@@ -1,4 +1,4 @@
-import TemplatePhoneClient from './components/TemplatePhone'
+import TemplatePhoneClient from './_components/TemplatePhone'
 import trpcServer from '@/lib/trpc/trpcServer'
 import type { Metadata } from 'next'
 

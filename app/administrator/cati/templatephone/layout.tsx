@@ -1,4 +1,4 @@
-import { PhoneModal } from './components/phone-modal'
+import { PhoneModal } from './_components/phone-modal'
 import React from 'react'
 
 function Layout({ children }: { children: React.ReactNode }) {

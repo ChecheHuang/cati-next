@@ -1,6 +1,6 @@
 'use client'
 
-import { usePhoneModal } from '@/app/administrator/cati/templatephone/hooks/use-phone-modal'
+import { usePhoneModal } from '@/app/administrator/cati/templatephone/_hooks/use-phone-modal'
 import AutoCompleteSelect from '@/components/AutoCompleteSelect'
 import { Modal } from '@/components/modals/modal'
 import { Button } from '@/components/ui/button'

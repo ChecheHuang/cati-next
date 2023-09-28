@@ -1,7 +1,7 @@
 'use client'
 
 import { TemplatePhoneColumn } from './columns'
-import { usePhoneModal } from '@/app/administrator/cati/templatephone/hooks/use-phone-modal'
+import { usePhoneModal } from '@/app/administrator/cati/templatephone/_hooks/use-phone-modal'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { Button } from '@/components/ui/button'
 import {

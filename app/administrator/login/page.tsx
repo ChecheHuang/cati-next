@@ -1,6 +1,6 @@
-import girl from './assets/girl.png'
-import phone from './assets/phone.png'
-import AuthForm from './components/AuthForm'
+import girl from './_assets/girl.png'
+import phone from './_assets/phone.png'
+import AuthForm from './_components/AuthForm'
 import Image from 'next/image'
 
 function Login() {
