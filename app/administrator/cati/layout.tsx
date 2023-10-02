@@ -1,5 +1,6 @@
 import Header from './_components/Header'
 import { Sidebar } from './_components/Sidebar'
+import SimpleBar from '@/components/SimpleBar'
 import React from 'react'
 
 export const metadata = {
@@ -13,9 +14,13 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <div className="flex h-[calc(100vh-58px)]   ">
         <Sidebar />
-        <main className="h-full w-full flex-1 overflow-auto px-4 py-2">
+        <SimpleBar>
           {children}
-        </main>
+
+          {/* <main className="h-full w-full flex-1 overflow-auto px-4 py-2">
+            {children}
+          </main> */}
+        </SimpleBar>
       </div>
     </div>
   )

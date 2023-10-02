@@ -51,7 +51,7 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        ' hidden h-full w-[220px] overflow-auto border-e border-primary/50 px-4 py-2 md:block',
+        ' hidden h-full w-[220px] shrink-0 overflow-auto border-e border-primary/50 px-4 py-2 md:block',
         className,
       )}
     >

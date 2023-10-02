@@ -1,7 +1,6 @@
 import { router, publicProcedure } from '../trpc'
 import prismadb from '@/lib/prismadb'
 import { fakerZH_TW } from '@faker-js/faker'
-import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 export const templatePhoneRouter = router({
@@ -77,7 +76,6 @@ export const templatePhoneRouter = router({
         phone,
       },
     })
-    revalidatePath('/administrator/cati/templatephone')
 
     return create
   }),

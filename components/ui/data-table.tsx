@@ -143,7 +143,7 @@ export function DataTable<TData, TValue>({
             <Icons.previous className="h-4 w-4" />
           </Button>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            第 {table.getState().pagination.pageIndex + 1} 頁,共{' '}
+            第 {table.getState().pagination.pageIndex + 1} 頁,共
             {table.getPageCount()}頁
           </div>
           <Button

@@ -24,7 +24,7 @@ export default function RootLayout({
       <body
         className={cn(inter.className, 'h-screen w-screen overflow-hidden')}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {/* <SocketProvider> */}
           <QueryProvider>
             {children}

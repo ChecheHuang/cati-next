@@ -2,7 +2,6 @@
 
 import { Modal } from '@/components/modals/modal'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
 
 interface AlertModalProps {
   isOpen: boolean
@@ -17,16 +16,6 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onConfirm,
   loading,
 }) => {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  if (!isMounted) {
-    return null
-  }
-
   return (
     <Modal
       title="確認刪除嗎?"

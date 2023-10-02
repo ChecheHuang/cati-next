@@ -1,7 +1,9 @@
 import { getAllTemplatePhone } from '../page'
-import Client from './Client'
 import ClientSwitch from './_components/ClientSwitch'
+import UploadButton from './_components/UploadButton'
+import PrevButton from '@/components/PrevButton'
 import { Button } from '@/components/ui/button'
+import { Heading } from '@/components/ui/heading'
 import {
   Table,
   TableBody,
@@ -14,6 +16,7 @@ import {
 import trpcServer from '@/lib/trpc/trpcServer'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 interface TemplatePhoneByIdPageProps {
   params: {
@@ -58,35 +61,48 @@ async function TemplatePhoneByIdPage({
     typeof searchParams.size === 'string' ? Number(searchParams.size) : 5
   const data = await getTemplatePhoneById({ templateId, page, size })
 
+  if (data.length === 0) return notFound()
   return (
-    <div>
-      <Client />
-
+    <div className="flex-1 space-y-4">
+      {/* <Client /> */}
+      <div className="flex items-center justify-between">
+        <Heading title={data[0]?.template_name} />
+        <div className="flex gap-2">
+          <PrevButton />
+          <UploadButton
+            templateId={templateId}
+            templateName={data[0]?.template_name}
+          />
+        </div>
+      </div>
       <Table>
-        <TableCaption className="space-x-2">
-          <Button disabled={page <= 1}>
-            <Link
-              href={`/administrator/cati/templatephone//${templateId}?page=${
-                page > 1 ? page - 1 : 1
-              }`}
-            >
-              上一頁
-            </Link>
-          </Button>
-          <Button disabled={data.length < size}>
-            <Link
-              href={`/administrator/cati/templatephone//${templateId}?page=${
-                page + 1
-              }`}
-            >
-              下一頁
-            </Link>
-          </Button>
+        <TableCaption>
+          <div className="flex items-center justify-center gap-2">
+            <Button disabled={page <= 1}>
+              <Link
+                href={`/administrator/cati/templatephone//${templateId}?page=${
+                  page > 1 ? page - 1 : 1
+                }`}
+              >
+                上一頁
+              </Link>
+            </Button>
+            <div className=" text-secondary">第{page}頁</div>
+            <Button disabled={data.length < size}>
+              <Link
+                href={`/administrator/cati/templatephone//${templateId}?page=${
+                  page + 1
+                }`}
+              >
+                下一頁
+              </Link>
+            </Button>
+          </div>
         </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>編號</TableHead>
-            <TableHead>名字</TableHead>
+            <TableHead>姓名</TableHead>
             <TableHead>電話</TableHead>
             <TableHead>有效</TableHead>
           </TableRow>

@@ -2,7 +2,7 @@ import TemplatePhoneClient from './_components/TemplatePhone'
 import trpcServer from '@/lib/trpc/trpcServer'
 import type { Metadata } from 'next'
 
-// export const revalidate = 1
+export const revalidate = 1
 
 export const getAllTemplatePhone = async () =>
   await trpcServer.templatePhone.get()
@@ -16,7 +16,7 @@ const TemplatePhone = async () => {
   const data = await getAllTemplatePhone()
   return (
     <div className="flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 ">
         <TemplatePhoneClient data={data} />
       </div>
     </div>
