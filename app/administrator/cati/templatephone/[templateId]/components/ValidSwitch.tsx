@@ -10,7 +10,7 @@ interface ClientSwitchProps {
   checked: boolean
 }
 
-const ClientSwitch: React.FC<ClientSwitchProps> = ({ id, checked }) => {
+const ValidSwitch: React.FC<ClientSwitchProps> = ({ id, checked }) => {
   const router = useRouter()
 
   const changeValid = trpcClient.templatePhone.update.useMutation({
@@ -34,4 +34,4 @@ const ClientSwitch: React.FC<ClientSwitchProps> = ({ id, checked }) => {
   )
 }
 
-export default ClientSwitch
+export default ValidSwitch

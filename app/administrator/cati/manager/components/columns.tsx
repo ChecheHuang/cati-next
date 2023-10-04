@@ -1,6 +1,6 @@
 'use client'
 
-import { CellAction } from './cell-action'
+import { CellAction } from './CellAction'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ColumnDef } from '@tanstack/react-table'
@@ -8,7 +8,7 @@ import { format } from 'date-fns'
 import Link from 'next/link'
 
 export type TemplatePhoneColumn = {
-  id: string
+  templateId: string
   templateName: string
   count: number
   createdAt: Date
@@ -16,7 +16,7 @@ export type TemplatePhoneColumn = {
 
 export const columns: ColumnDef<TemplatePhoneColumn>[] = [
   {
-    accessorKey: 'id',
+    accessorKey: 'templateId',
     header: 'ID',
   },
   {
@@ -26,7 +26,7 @@ export const columns: ColumnDef<TemplatePhoneColumn>[] = [
       return (
         <Link
           className={cn(buttonVariants({ variant: 'link' }))}
-          href={`/administrator/cati/templatephone/${row.original.id}`}
+          href={`/administrator/cati/templatephone/${row.original.templateId}`}
         >
           {row?.original?.templateName}
         </Link>

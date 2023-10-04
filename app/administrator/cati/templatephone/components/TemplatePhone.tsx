@@ -15,7 +15,7 @@ interface TemplatePhoneProps {
 
 const TemplatePhone: React.FC<TemplatePhoneProps> = ({ data }) => {
   return (
-    <>
+    <div className=" space-y-2">
       <div className="flex items-center justify-between">
         <Heading title="電話簿管理" description="Manage your phone book" />
         <Link
@@ -27,7 +27,7 @@ const TemplatePhone: React.FC<TemplatePhoneProps> = ({ data }) => {
       </div>
       <Separator />
       <DataTable searchKey="templateName" columns={columns} data={data} />
-    </>
+    </div>
   )
 }
 

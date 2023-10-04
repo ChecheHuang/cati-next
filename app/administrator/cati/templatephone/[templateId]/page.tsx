@@ -1,7 +1,8 @@
 import { getAllTemplatePhone } from '../page'
-import ClientSwitch from './_components/ClientSwitch'
-import UploadButton from './_components/UploadButton'
-import PrevButton from '@/components/PrevButton'
+import DeleteButton from './components/DeleteButton'
+import UploadButton from './components/UploadButton'
+import ValidSwitch from './components/ValidSwitch'
+import { Icons } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import {
@@ -13,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import trpcServer from '@/lib/trpc/trpcServer'
+import prismadb from '@/lib/prismadb'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -25,11 +26,37 @@ interface TemplatePhoneByIdPageProps {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-const getTemplatePhoneById = async (input: {
+const getTemplatePhoneById = async ({
+  templateId,
+  page,
+  size,
+}: {
   templateId: string
   page?: number | undefined
   size?: number | undefined
-}) => await trpcServer.templatePhone.getByTemplateId(input)
+}) => {
+  let option
+  if (page && size) {
+    option = {
+      skip: (page - 1) * size,
+      take: size,
+    }
+  } else {
+    option = {}
+  }
+  const data = await prismadb.phone_template.findMany({
+    where: {
+      template_id: templateId,
+    },
+    ...option,
+  })
+  const total = await prismadb.phone_template.count({
+    where: {
+      template_id: templateId,
+    },
+  })
+  return { data, total }
+}
 
 export async function generateMetadata({
   params: { templateId },
@@ -39,11 +66,11 @@ export async function generateMetadata({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
   const size =
     typeof searchParams.size === 'string' ? Number(searchParams.size) : 10
-  const data = await getTemplatePhoneById({ templateId, page, size })
+  const { data } = await getTemplatePhoneById({ templateId, page, size })
 
   if (data.length === 0) {
     return {
-      title: '新增電話簿',
+      title: '找不到電話簿',
     }
   }
 
@@ -59,42 +86,69 @@ async function TemplatePhoneByIdPage({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
   const size =
     typeof searchParams.size === 'string' ? Number(searchParams.size) : 5
-  const data = await getTemplatePhoneById({ templateId, page, size })
+  const { data, total } = await getTemplatePhoneById({ templateId, page, size })
+  const lastPage = Math.ceil(total / size)
+  const firstPagePath = `/administrator/cati/templatephone/${templateId}?page=1`
+  const lastPagePath = `/administrator/cati/templatephone/${templateId}?page=${lastPage}`
+  const prevPagePath = `/administrator/cati/templatephone/${templateId}?page=${
+    page > 1 ? page - 1 : 1
+  }`
+  const nextPagePath = `/administrator/cati/templatephone/${templateId}?page=${
+    page + 1
+  }`
 
   if (data.length === 0) return notFound()
   return (
     <div className="flex-1 space-y-4">
-      {/* <Client /> */}
       <div className="flex items-center justify-between">
         <Heading title={data[0]?.template_name} />
-        <div className="flex gap-2">
-          <PrevButton />
-          <UploadButton
-            templateId={templateId}
-            templateName={data[0]?.template_name}
-          />
-        </div>
+        <UploadButton
+          templateId={templateId}
+          templateName={data[0]?.template_name}
+          redirectPath={`${templateId}?page=${lastPage}`}
+        />
       </div>
       <Table>
         <TableCaption>
           <div className="flex items-center justify-center gap-2">
-            <Button disabled={page <= 1}>
-              <Link
-                href={`/administrator/cati/templatephone//${templateId}?page=${
-                  page > 1 ? page - 1 : 1
-                }`}
-              >
-                上一頁
+            <Button
+              variant="outline"
+              disabled={page <= 1}
+              className="hidden h-8 w-8 p-0 lg:flex"
+            >
+              <Link href={firstPagePath}>
+                <Icons.speedPrevious className="h-4 w-4" />
               </Link>
             </Button>
-            <div className=" text-secondary">第{page}頁</div>
-            <Button disabled={data.length < size}>
-              <Link
-                href={`/administrator/cati/templatephone//${templateId}?page=${
-                  page + 1
-                }`}
-              >
-                下一頁
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              disabled={page <= 1}
+            >
+              <Link href={prevPagePath}>
+                <Icons.previous className="h-4 w-4" />
+              </Link>
+            </Button>
+            <div className=" text-secondary">
+              第{page}頁,共{lastPage}頁
+            </div>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              disabled={page === lastPage}
+            >
+              <Link href={nextPagePath}>
+                <Icons.next className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              disabled={page === lastPage}
+            >
+              <span className="sr-only">Go to last page</span>
+              <Link href={lastPagePath}>
+                <Icons.speedNext className="h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -105,6 +159,7 @@ async function TemplatePhoneByIdPage({
             <TableHead>姓名</TableHead>
             <TableHead>電話</TableHead>
             <TableHead>有效</TableHead>
+            <TableHead>刪除</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -114,7 +169,10 @@ async function TemplatePhoneByIdPage({
               <TableCell>{name}</TableCell>
               <TableCell>{phone}</TableCell>
               <TableCell>
-                <ClientSwitch id={id} checked={valid} />
+                <ValidSwitch id={id} checked={valid} />
+              </TableCell>
+              <TableCell>
+                <DeleteButton templateId={templateId} id={id} page={page} />
               </TableCell>
             </TableRow>
           ))}
@@ -128,7 +186,7 @@ export async function generateStaticParams() {
   const totalTemplatePhoneData = await getAllTemplatePhone()
 
   return totalTemplatePhoneData.map((templatePhone) => ({
-    templateId: templatePhone.id.toString(),
+    templateId: templatePhone.templateId.toString(),
   }))
 }
 

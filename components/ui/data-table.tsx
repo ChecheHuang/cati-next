@@ -26,12 +26,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchKey?: string
+  placeholder?: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  placeholder = '搜尋',
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<{
@@ -57,7 +59,7 @@ export function DataTable<TData, TValue>({
       {searchKey ? (
         <div className="flex items-center pb-4">
           <Input
-            placeholder="搜尋"
+            placeholder={placeholder}
             value={
               (table.getColumn(searchKey)?.getFilterValue() as string) ?? ''
             }

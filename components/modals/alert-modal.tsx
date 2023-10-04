@@ -2,6 +2,7 @@
 
 import { Modal } from '@/components/modals/modal'
 import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
 interface AlertModalProps {
   isOpen: boolean
@@ -28,6 +29,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           取消
         </Button>
         <Button disabled={loading} variant="destructive" onClick={onConfirm}>
+          {loading && <Loader2 className="mr-2 h-6 w-6 animate-spin " />}
           刪除
         </Button>
       </div>

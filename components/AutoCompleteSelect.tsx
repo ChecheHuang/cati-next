@@ -25,7 +25,7 @@ import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form'
 interface AutoCompleteSelectProps<T extends FieldValues> {
   form: UseFormReturn<T>
   name: Path<T>
-  options: string[]
+  options: { label: string; value: string }[]
   label: string
   placeholder: string
   commandPlaceholder: string
@@ -73,7 +73,8 @@ function AutoCompleteSelect<T extends FieldValues>({
                       )}
                     >
                       {field.value
-                        ? options.find((value) => value === field.value)
+                        ? options.find(({ value }) => value === field.value)
+                            ?.label
                         : placeholder}
 
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -86,7 +87,7 @@ function AutoCompleteSelect<T extends FieldValues>({
                   <CommandInput placeholder={commandPlaceholder} />
                   <CommandEmpty>{commandEmpty}</CommandEmpty>
                   <CommandGroup className="max-h-40 overflow-auto">
-                    {options.map((value) => (
+                    {options.map(({ value, label }) => (
                       <CommandItem
                         value={value}
                         key={value}
@@ -101,7 +102,7 @@ function AutoCompleteSelect<T extends FieldValues>({
                             value === field.value ? 'opacity-100' : 'opacity-0',
                           )}
                         />
-                        {value}
+                        {label}
                       </CommandItem>
                     ))}
                   </CommandGroup>

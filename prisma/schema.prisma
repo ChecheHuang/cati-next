@@ -21,15 +21,15 @@ model Admin {
 }
 
 model Campaign {
-  id         Int      @id @default(autoincrement())
-  code       String   @unique
-  name       String
-  questions  Json
-  sort       Int?
-  begin_date DateTime
-  end_date   DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  code           String   @unique
+  name           String
+  questions      Json
+  current_active Boolean  @default(false)
+  begin_date     DateTime
+  end_date       DateTime
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   name_list Name_list[] @relation("CampaignNameList")
 }
@@ -46,6 +46,8 @@ model Phone_template {
   updated_at DateTime @updatedAt
 
   name_list Name_list[] @relation("NameListPhoneTemplate")
+
+  @@unique([template_id, phone])
 }
 
 model Name_list {

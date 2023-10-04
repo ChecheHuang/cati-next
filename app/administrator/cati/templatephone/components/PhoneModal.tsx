@@ -1,24 +1,42 @@
 'use client'
 
-import { usePhoneModal } from '@/app/administrator/cati/templatephone/_hooks/use-phone-modal'
 import AutoCompleteSelect from '@/components/AutoCompleteSelect'
 import { Modal } from '@/components/modals/modal'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import trpcClient from '@/lib/trpc/trpcClient'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { create } from 'zustand'
+
+interface usePhoneModalStore {
+  isOpen: boolean
+  onOpen: (templateId: string) => void
+  onClose: () => void
+  setCampaignId: (campaign_id: string) => void
+  campaign_id: string
+  phone_template_id: string
+}
+
+export const usePhoneModal = create<usePhoneModalStore>((set) => ({
+  isOpen: false,
+  onOpen: (templateId) => set({ isOpen: true, phone_template_id: templateId }),
+  onClose: () => set({ isOpen: false, campaign_id: '', phone_template_id: '' }),
+  setCampaignId: (campaign_id) => set({ campaign_id }),
+  campaign_id: '',
+  phone_template_id: '',
+}))
 
 const formSchema = z.object({
-  name: z.string().min(1),
+  campaign_id: z.string().min(1),
 })
 
 export const PhoneModal = () => {
-  const phoneModal = usePhoneModal()
-  // const options = ['活動1', '活動2', '活動3']
+  const { onClose, setCampaignId, campaign_id, isOpen, phone_template_id } =
+    usePhoneModal()
+
   const { data: options = [] } = trpcClient.templatePhone.options.useQuery()
 
   const [loading, setLoading] = useState(false)
@@ -28,30 +46,33 @@ export const PhoneModal = () => {
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      campaign_id: '',
     },
   })
 
-  const onSubmit = async (values: FormType) => {
+  const onSubmit = ({ campaign_id }: FormType) => {
     try {
       setLoading(true)
-      phoneModal.onClose()
-      console.log(values)
-      // const response = await axios.post('/api/stores', values)
-      // window.location.assign(`/${response.data.id}`)
+      setCampaignId(campaign_id)
     } catch (error) {
       console.error('Something went wrong')
     } finally {
       setLoading(false)
     }
   }
+  useEffect(() => {
+    if (!campaign_id || !phone_template_id) return
+    console.log('campaign_id', campaign_id)
+    console.log('phone_template_id', phone_template_id)
+    onClose()
+  }, [campaign_id])
 
   return (
     <Modal
       title="加到活動"
       description="選擇該電話簿要加到的活動中"
-      isOpen={phoneModal.isOpen}
-      onClose={phoneModal.onClose}
+      isOpen={isOpen}
+      onClose={onClose}
     >
       <div>
         <div className="space-y-4 py-2 pb-4">
@@ -63,7 +84,7 @@ export const PhoneModal = () => {
                     form={form}
                     label="選擇活動"
                     options={options}
-                    name="name"
+                    name="campaign_id"
                     placeholder="選擇活動"
                     commandPlaceholder="尋找活動"
                     commandEmpty="沒有該活動"
@@ -73,7 +94,7 @@ export const PhoneModal = () => {
                   <Button
                     disabled={loading}
                     variant="outline"
-                    onClick={phoneModal.onClose}
+                    onClick={onClose}
                   >
                     取消
                   </Button>

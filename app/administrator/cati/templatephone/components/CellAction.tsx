@@ -1,7 +1,7 @@
 'use client'
 
+import { usePhoneModal } from './PhoneModal'
 import { TemplatePhoneColumn } from './columns'
-import { usePhoneModal } from '@/app/administrator/cati/templatephone/_hooks/use-phone-modal'
 import { AlertModal } from '@/components/modals/alert-modal'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,10 +11,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import axios from 'axios'
+import trpcClient from '@/lib/trpc/trpcClient'
 import { Edit, MoreHorizontal, TabletSmartphone, Trash } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 interface CellActionProps {
   data: TemplatePhoneColumn
@@ -22,29 +23,35 @@ interface CellActionProps {
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const phoneModal = usePhoneModal()
+
+  const deleteByTemplateId =
+    trpcClient.templatePhone.deleteByTemplateId.useMutation({
+      onSuccess: () => {
+        toast.success('刪除成功')
+        router.refresh()
+      },
+      onSettled: () => setIsOpen(false),
+      onError: () => toast.error('刪除失敗'),
+    })
 
   const onConfirm = () => {
     try {
-      setLoading(true)
-      router.refresh()
+      deleteByTemplateId.mutate(data.templateId)
     } catch (error) {
       console.log(error)
-    } finally {
-      setOpen(false)
-      setLoading(false)
     }
   }
+  const handleDelete = () => setIsOpen(true)
 
   return (
     <>
       <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
         onConfirm={onConfirm}
-        loading={loading}
+        loading={deleteByTemplateId.isLoading}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -57,19 +64,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>操作</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => {
-              phoneModal.onOpen()
+              phoneModal.onOpen(data.templateId)
             }}
           >
             <TabletSmartphone className="mr-2 h-4 w-4" /> 加到活動
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/administrator/cati/templatephone/${data.id}`)
+              router.push(
+                `/administrator/cati/templatephone/${data.templateId}`,
+              )
             }
           >
             <Edit className="mr-2 h-4 w-4" /> 修改
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={handleDelete}>
             <Trash className="mr-2 h-4 w-4" /> 刪除
           </DropdownMenuItem>
         </DropdownMenuContent>
