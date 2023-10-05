@@ -2,7 +2,8 @@
 
 import { TemplatePhoneColumn, columns } from './columns'
 import { buttonVariants } from '@/components/ui/button'
-import { DataTable } from '@/components/ui/data-table'
+import DataTable from '@/components/ui/data-table'
+// import { DataTable } from '@/components/ui/data-table'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'

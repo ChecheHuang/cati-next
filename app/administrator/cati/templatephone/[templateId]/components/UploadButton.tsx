@@ -4,9 +4,9 @@ import { usePhoneModal } from '../../components/PhoneModal'
 import { Loader } from '@/components/loader'
 import { Modal } from '@/components/modals/modal'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { DataTable } from '@/components/ui/data-table'
+import DataTable from '@/components/ui/data-table'
 import trpcClient from '@/lib/trpc/trpcClient'
-import { cn } from '@/lib/utils'
+import { cn, exportExcel, readExcel } from '@/lib/utils'
 import { Phone_template } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { Trash } from 'lucide-react'
@@ -14,7 +14,6 @@ import { useRouter } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
 import React from 'react'
 import { toast } from 'react-toastify'
-import * as XLSX from 'xlsx'
 
 type InsertDataType = Pick<
   Phone_template,
@@ -64,23 +63,9 @@ function UploadButton({
     if (!isExcelFile && !isCSVFile) {
       return toast.error('請選擇 Excel 檔或 CSV 檔')
     }
-    const promise = new Promise((resolve, reject) => {
-      const fileReader = new FileReader()
-      fileReader.readAsArrayBuffer(file)
-      fileReader.onload = (e) => {
-        const bufferArray = e.target?.result
-        const wb = XLSX.read(bufferArray, { type: 'buffer' })
-        const wsName = wb.SheetNames[0]
-        const ws = wb.Sheets[wsName]
-        const data = XLSX.utils.sheet_to_json(ws)
-        resolve(data)
-      }
-      fileReader.onerror = (error) => {
-        reject(error)
-      }
-    })
+
     setIsModalOpen(true)
-    const excelData = await promise
+    const excelData = await readExcel(file)
     const worker = new Worker(new URL('./worker.ts', import.meta.url))
     worker.postMessage({ templateId, templateName, excelData })
     worker.onmessage = (event) => {
@@ -162,7 +147,7 @@ function UploadButton({
       <div className="flex gap-2">
         <Button
           onClick={() => {
-            onOpen(templateId)
+            onOpen([templateId])
           }}
         >
           加到活動
@@ -195,8 +180,5 @@ function handleOnExport() {
     { 姓名: '空號1', 電話: '0936254072' },
     { 姓名: '空號2', 電話: '0921950654' },
   ]
-  const wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(exampleData)
-  XLSX.utils.book_append_sheet(wb, ws, '匯入範例')
-  XLSX.writeFile(wb, '匯入範例.xlsx')
+  exportExcel(exampleData, '匯入範例', '匯入範例')
 }

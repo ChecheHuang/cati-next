@@ -13,20 +13,21 @@ import { create } from 'zustand'
 
 interface usePhoneModalStore {
   isOpen: boolean
-  onOpen: (templateId: string) => void
+  onOpen: (templateIdArray: string[]) => void
   onClose: () => void
   setCampaignId: (campaign_id: string) => void
   campaign_id: string
-  phone_template_id: string
+  phone_template_id: string[]
 }
 
 export const usePhoneModal = create<usePhoneModalStore>((set) => ({
   isOpen: false,
-  onOpen: (templateId) => set({ isOpen: true, phone_template_id: templateId }),
-  onClose: () => set({ isOpen: false, campaign_id: '', phone_template_id: '' }),
+  onOpen: (templateIdArray) =>
+    set({ isOpen: true, phone_template_id: templateIdArray }),
+  onClose: () => set({ isOpen: false, campaign_id: '', phone_template_id: [] }),
   setCampaignId: (campaign_id) => set({ campaign_id }),
   campaign_id: '',
-  phone_template_id: '',
+  phone_template_id: [],
 }))
 
 const formSchema = z.object({
@@ -65,6 +66,7 @@ export const PhoneModal = () => {
     console.log('campaign_id', campaign_id)
     console.log('phone_template_id', phone_template_id)
     onClose()
+    form.setValue('campaign_id', '')
   }, [campaign_id])
 
   return (

@@ -64,7 +64,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>操作</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => {
-              phoneModal.onOpen(data.templateId)
+              phoneModal.onOpen([data.templateId])
             }}
           >
             <TabletSmartphone className="mr-2 h-4 w-4" /> 加到活動

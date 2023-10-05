@@ -14,13 +14,15 @@ import {
 import {
   ColumnDef,
   ColumnFiltersState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import * as React from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -29,33 +31,43 @@ interface DataTableProps<TData, TValue> {
   placeholder?: string
 }
 
-export function DataTable<TData, TValue>({
+function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
   placeholder = '搜尋',
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [pagination, setPagination] = useState<{
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  )
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [pagination, setPagination] = React.useState<{
     pageSize: number
     pageIndex: number
   }>({ pageSize: 5, pageIndex: 0 })
   const table = useReactTable({
     data,
     columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnFiltersChange: setColumnFilters,
+    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
+
     state: {
+      sorting,
       columnFilters,
+      rowSelection,
       pagination,
     },
   })
 
   return (
-    <div>
+    <div className="w-full">
       {searchKey ? (
         <div className="flex items-center pb-4">
           <Input
@@ -70,7 +82,6 @@ export function DataTable<TData, TValue>({
           />
         </div>
       ) : null}
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -78,10 +89,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead
-                      className="text-info font-semibold"
-                      key={header.id}
-                    >
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -117,7 +125,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  沒有結果
+                  沒有資料
                 </TableCell>
               </TableRow>
             )}
@@ -171,3 +179,5 @@ export function DataTable<TData, TValue>({
     </div>
   )
 }
+
+export default DataTable
