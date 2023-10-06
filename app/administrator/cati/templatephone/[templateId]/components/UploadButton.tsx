@@ -1,6 +1,5 @@
 'use client'
 
-import { usePhoneModal } from '../../components/PhoneModal'
 import { Loader } from '@/components/loader'
 import { Modal } from '@/components/modals/modal'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -31,7 +30,6 @@ function UploadButton({
   disabled?: boolean
   redirectPath?: string
 }) {
-  const { onOpen } = usePhoneModal()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [data, setData] = useState<InsertDataType[]>([])
   const isDisabled = data.length === 0
@@ -145,13 +143,6 @@ function UploadButton({
         )}
       </Modal>
       <div className="flex gap-2">
-        <Button
-          onClick={() => {
-            onOpen([templateId])
-          }}
-        >
-          加到活動
-        </Button>
         <input
           onChange={handleReadExcel}
           id="upload"

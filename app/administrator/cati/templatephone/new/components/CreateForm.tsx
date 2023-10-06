@@ -13,8 +13,10 @@ function CreateForm({
   templateId: string
   rejectNameArray: string[]
 }) {
-  const [newTemplateName, setNewTemplateName] = useState<string>('')
+  const [newTemplateName, setNewTemplateName] = useState<string | null>(null)
   const errorMessage = useMemo(() => {
+    if (newTemplateName === null) return
+    if (newTemplateName === '') return '請輸入名稱'
     if (rejectNameArray.includes(newTemplateName)) return '電話簿名稱重複'
     return false
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -25,16 +27,16 @@ function CreateForm({
       <div className="flex items-center justify-between">
         <Heading title="新增電話簿" />
         <UploadButton
-          disabled={!!errorMessage}
+          disabled={!!errorMessage || !newTemplateName}
           templateId={templateId}
-          templateName={newTemplateName}
+          templateName={newTemplateName || ''}
         />
       </div>
       <div className=" flex h-[400px] w-full items-center justify-center">
         <div className="w-1/2 space-y-2">
           <Label htmlFor="templateName">新電話簿名稱</Label>
           <Input
-            value={newTemplateName}
+            value={newTemplateName || ''}
             onChange={(e) => setNewTemplateName(e.target.value)}
             id="templateName"
             placeholder="新電話簿..."

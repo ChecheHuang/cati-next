@@ -24,19 +24,19 @@ import {
 } from '@tanstack/react-table'
 import * as React from 'react'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  searchKey?: string
+interface DataTableProps<T extends Record<string, any>> {
+  columns: ColumnDef<T>[]
+  data: T[]
+  searchKey?: keyof T
   placeholder?: string
 }
 
-function DataTable<TData, TValue>({
+function DataTable<T extends Record<string, any>>({
   columns,
   data,
   searchKey,
   placeholder = '搜尋',
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -73,10 +73,14 @@ function DataTable<TData, TValue>({
           <Input
             placeholder={placeholder}
             value={
-              (table.getColumn(searchKey)?.getFilterValue() as string) ?? ''
+              (table
+                .getColumn(searchKey as string)
+                ?.getFilterValue() as string) ?? ''
             }
             onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
+              table
+                .getColumn(searchKey as string)
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />

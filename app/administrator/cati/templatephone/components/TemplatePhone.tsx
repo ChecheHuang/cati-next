@@ -27,7 +27,12 @@ const TemplatePhone: React.FC<TemplatePhoneProps> = ({ data }) => {
         </Link>
       </div>
       <Separator />
-      <DataTable searchKey="templateName" columns={columns} data={data} />
+      <DataTable
+        placeholder="搜尋電話簿"
+        searchKey="templateName"
+        columns={columns}
+        data={data}
+      />
     </div>
   )
 }

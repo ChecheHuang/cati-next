@@ -1,5 +1,5 @@
 import { getAllTemplatePhone } from '../page'
-import CreateForm from './_component/CreateForm'
+import CreateForm from './components/CreateForm'
 import React from 'react'
 
 async function Page() {

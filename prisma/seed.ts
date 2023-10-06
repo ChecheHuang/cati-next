@@ -1,3 +1,8 @@
+import {
+  generatePhoneNumber,
+  generateRandomDates,
+  getRandomItems,
+} from './seedFn'
 import prismadb from '@/lib/prismadb'
 import { fakerZH_TW } from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
@@ -43,45 +48,30 @@ const phoneTemplateSeed = async () => {
   await prisma.phone_template.createMany({
     data: templateData,
   })
-  console.log('phoneTemplateSeed done')
 }
 const campaignSeed = async () => {
-  console.log('campaign seed start...')
-  const dataLength = 1
+  const dataLength = 3
   const currentYear = new Date().getFullYear()
   const seedData = Array(dataLength)
     .fill(true)
     .map((_, index) => {
       const code = (currentYear - index).toString()
-      const questions = [
-        {
-          question: '你最喜歡的餐廳是?',
-          options: ['美食', '餐廳', '美食與餐廳'],
-          type: '多選',
-        },
-        {
-          question: '你最喜歡的寵物是?',
-          options: ['貓', '狗', '貓與狗'],
-          type: '單選',
-        },
-        {
-          question: '你最喜歡哪裡?',
-          type: '填空',
-        },
-      ]
+      const questions = getRandomItems()
+      const { begin_date, end_date } = generateRandomDates(code)
+      const current_active = index === 0
       return {
         code,
         name: code + '活動',
+        current_active,
         questions,
-        begin_date: new Date(),
-        end_date: new Date(),
+        begin_date,
+        end_date,
       }
     })
   const seed = await prismadb.campaign.createMany({
     data: seedData,
   })
   // console.log(seed)
-  console.log('campaign seed end...')
 }
 
 const adminSeed = async () => {
@@ -106,30 +96,3 @@ async function main() {
 }
 
 void main()
-
-function generatePhoneNumber() {
-  const generatedNumbers = new Set()
-
-  function isValidPhoneNumber(number: string) {
-    return /^09\d{8}$/.test(number)
-  }
-
-  function generateUniquePhoneNumber() {
-    let phoneNumber = ''
-
-    do {
-      phoneNumber = '09'
-      for (let i = 0; i < 8; i++) {
-        phoneNumber += Math.floor(Math.random() * 10)
-      }
-    } while (
-      !isValidPhoneNumber(phoneNumber) ||
-      generatedNumbers.has(phoneNumber)
-    )
-
-    generatedNumbers.add(phoneNumber)
-    return phoneNumber
-  }
-
-  return generateUniquePhoneNumber
-}

@@ -1,16 +1,17 @@
 'use client'
 
+import { ManagerDataType } from '../page'
+import { columns } from './columns'
 import { buttonVariants } from '@/components/ui/button'
-import { DataTable } from '@/components/ui/data-table'
+import DataTable from '@/components/ui/data-table'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { Campaign } from '@prisma/client'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
 interface ManagerClientProps {
-  data: Campaign[]
+  data: ManagerDataType[]
 }
 
 const ManagerClient: React.FC<ManagerClientProps> = ({ data }) => {
@@ -30,7 +31,7 @@ const ManagerClient: React.FC<ManagerClientProps> = ({ data }) => {
           </Link>
         </div>
         <Separator />
-        {/* <DataTable searchKey="templateName" columns={columns} data={data} /> */}
+        <DataTable searchKey="name" columns={columns} data={data} />
       </div>
     </div>
   )

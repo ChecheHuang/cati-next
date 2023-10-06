@@ -63,16 +63,18 @@ export function Sidebar({ className }: SidebarProps) {
             </h2>
             <div className="space-y-1">
               {items.map(({ label, icon: Icon, href }, i) => {
-                const currentVariant = pathname?.includes(href)
-                  ? 'secondary'
-                  : 'ghost'
+                const isCurrentPath = pathname?.includes(href)
                 return (
                   <Link
                     key={i}
                     href={href}
                     className={cn(
-                      buttonVariants({ variant: currentVariant, size: 'sm' }),
+                      buttonVariants({
+                        variant: isCurrentPath ? 'secondary' : 'ghost',
+                        size: 'sm',
+                      }),
                       'w-full justify-start',
+                      isCurrentPath && 'font-bold text-primary',
                     )}
                   >
                     <Icon className="mr-2 h-4 w-4" />

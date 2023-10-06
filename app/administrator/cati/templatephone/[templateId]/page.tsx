@@ -1,5 +1,6 @@
 import { getAllTemplatePhone } from '../page'
 import DeleteButton from './components/DeleteButton'
+import OpenAddActiveModalButton from './components/OpenAddActiveModalButton'
 import UploadButton from './components/UploadButton'
 import ValidSwitch from './components/ValidSwitch'
 import { Icons } from '@/components/icons'
@@ -102,11 +103,15 @@ async function TemplatePhoneByIdPage({
     <div className="flex-1 space-y-4">
       <div className="flex items-center justify-between">
         <Heading title={data[0]?.template_name} />
-        <UploadButton
-          templateId={templateId}
-          templateName={data[0]?.template_name}
-          redirectPath={`${templateId}?page=${lastPage}`}
-        />
+
+        <div className="flex gap-2">
+          <OpenAddActiveModalButton templateId={templateId} />
+          <UploadButton
+            templateId={templateId}
+            templateName={data[0]?.template_name}
+            redirectPath={`${templateId}?page=${lastPage}`}
+          />
+        </div>
       </div>
       <Table>
         <TableCaption>

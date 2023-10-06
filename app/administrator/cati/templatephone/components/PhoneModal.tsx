@@ -38,7 +38,7 @@ export const PhoneModal = () => {
   const { onClose, setCampaignId, campaign_id, isOpen, phone_template_id } =
     usePhoneModal()
 
-  const { data: options = [] } = trpcClient.templatePhone.options.useQuery()
+  const { data: options = [] } = trpcClient.campaign.options.useQuery()
 
   const [loading, setLoading] = useState(false)
 
