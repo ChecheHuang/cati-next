@@ -45,9 +45,11 @@ export const columns: ColumnDef<ManagerDataType>[] = [
       return (
         <>
           {isActive ? (
-            <Badge>活動中</Badge>
+            <Badge className="whitespace-nowrap">活動中</Badge>
           ) : (
-            <Badge variant="outline">已結束</Badge>
+            <Badge className="whitespace-nowrap" variant="outline">
+              已結束
+            </Badge>
           )}
         </>
       )
@@ -78,7 +80,7 @@ const CellAction = ({ data }: { data: ManagerDataType }) => {
         <Badge
           onClick={() => changeActiveCampaign.mutate(data.id)}
           variant="outline"
-          className="text-md cursor-pointer"
+          className="text-md cursor-pointer whitespace-nowrap"
         >
           設為當前活動
         </Badge>
@@ -86,17 +88,17 @@ const CellAction = ({ data }: { data: ManagerDataType }) => {
 
       <Badge
         variant="outline"
-        className="text-md cursor-pointer  text-yellow-300 hover:text-yellow-600 dark:hover:text-yellow-200"
+        className="text-md cursor-pointer whitespace-nowrap  text-yellow-300 hover:text-yellow-600 dark:hover:text-yellow-200"
       >
-        <Link href={`/administrator/cati/manager/${data.id}/activity`}>
+        <Link href={`/administrator/cati/manager/${data.code}/activity`}>
           管理活動
         </Link>
       </Badge>
       <Badge
         variant="outline"
-        className="text-md cursor-pointer  text-blue-600 hover:text-blue-800 dark:hover:text-blue-400"
+        className="text-md cursor-pointer whitespace-nowrap  text-blue-600 hover:text-blue-800 dark:hover:text-blue-400"
       >
-        <Link href={`/administrator/cati/manager/${data.id}/list`}>
+        <Link href={`/administrator/cati/manager/${data.code}/list`}>
           管理名單
         </Link>
       </Badge>

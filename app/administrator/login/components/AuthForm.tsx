@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as z from 'zod'
 
-const FormSchema = z.object({
+const authSchema = z.object({
   name: z.string().min(1, '請輸入使用者名稱'),
   password: z.string().min(1, '請輸入密碼'),
 })
@@ -33,14 +33,14 @@ function AuthForm() {
     }
   }, [session?.status, router])
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof authSchema>>({
+    resolver: zodResolver(authSchema),
     defaultValues: {
       name: 'name',
       password: 'password',
     },
   })
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof authSchema>) {
     setIsLoading(true)
     try {
       const callback = await signIn('credentials', {
@@ -80,7 +80,9 @@ function AuthForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <div className=" h-1">
+                <FormMessage />
+              </div>
             </FormItem>
           )}
         />
@@ -99,7 +101,9 @@ function AuthForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <div className=" h-1">
+                <FormMessage />
+              </div>
             </FormItem>
           )}
         />
