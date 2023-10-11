@@ -19,11 +19,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
     "@next-auth/prisma-adapter": "0.4.4-canary.81",
-<<<<<<< HEAD
-    "@prisma/client": "^5.4.2",
-=======
     "@prisma/client": "^5.4.1",
->>>>>>> 878befb4df19725e73a9149df2d940604ee0c272
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.4",
