@@ -17,7 +17,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
@@ -44,6 +43,7 @@ function Add({ newId, issetCodeArray }: AddProps) {
     },
     {
       question: '你最喜歡的運動員是誰？',
+      options: [],
       type: QuestionTypeEnum.fill,
     },
 
@@ -86,7 +86,7 @@ function Add({ newId, issetCodeArray }: AddProps) {
           onSubmit={form.handleSubmit(onSubmit)}
           className="  w-full flex-col gap-2 "
         >
-          <div className="flex flex-wrap gap-2 ">
+          <div className="mb-6 flex flex-wrap gap-2 ">
             <FormField
               control={form.control}
               name="code"
@@ -145,7 +145,7 @@ function Add({ newId, issetCodeArray }: AddProps) {
               return (
                 <Card
                   key={questionIndex}
-                  className="relative h-full  w-[500px] p-4"
+                  className="relative  h-full  w-[49%] p-4"
                 >
                   <div className="absolute -left-1 -top-1 h-6 w-6 rounded-full border bg-primary text-center text-secondary">
                     {questionIndex + 1}
@@ -167,13 +167,9 @@ function Add({ newId, issetCodeArray }: AddProps) {
                         setQuestions((prev) => {
                           const newItem = [...prev]
                           newItem[questionIndex].type = value
-                          if (
-                            newItem[questionIndex].type !==
-                            QuestionTypeEnum.fill
-                          ) {
-                            console.log(newItem[questionIndex])
+                          if (value === QuestionTypeEnum.fill) {
+                            newItem[questionIndex].options = []
                           }
-
                           return newItem
                         })
                       }}
@@ -197,8 +193,9 @@ function Add({ newId, issetCodeArray }: AddProps) {
                       </SelectContent>
                     </Select>
                   </div>
-                  {/* <div className=" mt-2 space-y-2">
+                  <div className=" mt-2 space-y-2">
                     {item.type !== QuestionTypeEnum.fill &&
+                      item.options &&
                       item.options.map((option, optionIndex) => {
                         return (
                           <div
@@ -207,15 +204,29 @@ function Add({ newId, issetCodeArray }: AddProps) {
                           >
                             <Input
                               onChange={(e) => {
-                                const value = e.target.value
                                 setQuestions((prev) => {
                                   const newQuestions = [...prev]
+                                  newQuestions[questionIndex].options[
+                                    optionIndex
+                                  ] = e.target.value
+
                                   return newQuestions
                                 })
                               }}
                               value={option}
                             />
-                            <Button type="button" size="icon">
+                            <Button
+                              onClick={() => {
+                                const newQuestions = [...questions]
+                                newQuestions[questionIndex].options =
+                                  newQuestions[questionIndex].options.filter(
+                                    (_, index) => index !== optionIndex,
+                                  )
+                                setQuestions(newQuestions)
+                              }}
+                              type="button"
+                              size="icon"
+                            >
                               <X />
                             </Button>
                           </div>
@@ -223,6 +234,14 @@ function Add({ newId, issetCodeArray }: AddProps) {
                       })}
                     {item.type !== QuestionTypeEnum.fill && (
                       <Button
+                        onClick={() => {
+                          const newQuestions = [...questions]
+                          newQuestions[questionIndex].options = [
+                            ...newQuestions[questionIndex].options,
+                            '',
+                          ]
+                          setQuestions(newQuestions)
+                        }}
                         className="w-full"
                         type="button"
                         size="icon"
@@ -231,12 +250,22 @@ function Add({ newId, issetCodeArray }: AddProps) {
                         <PlusCircle />
                       </Button>
                     )}
-                  </div> */}
+                  </div>
                 </Card>
               )
             })}
             <div className="flex min-h-[200px] w-[500px] items-center justify-center">
-              <Button type="button" size="icon" variant="primary">
+              <Button
+                onClick={() => {
+                  setQuestions([
+                    ...questions,
+                    { question: '', type: QuestionTypeEnum.fill, options: [] },
+                  ])
+                }}
+                type="button"
+                size="icon"
+                variant="primary"
+              >
                 <PlusCircle />
               </Button>
             </div>
