@@ -1,9 +1,9 @@
 'use client'
 
-import { DatePickerWithRange } from './DateRangePicker'
-import List from './List'
+import Question from './Question'
+import { DatePickerWithRange } from '@/components/DateRangePicker'
+import StrictModeDroppable from '@/components/StrictModeDroppable'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -13,22 +13,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import trpcClient from '@/lib/trpc/trpcClient'
 import { QuestionType, QuestionTypeEnum } from '@/types/questions'
+import { DragDropContext, Draggable, DropResult } from '@hello-pangea/dnd'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { addMonths } from 'date-fns'
-import { PlusCircle, X } from 'lucide-react'
+import { Loader2, PlusCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { DayPickerRangeProps } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import * as z from 'zod'
 
 interface AddProps {
@@ -37,22 +31,12 @@ interface AddProps {
 }
 
 function Add({ newId, issetCodeArray }: AddProps) {
+  const router = useRouter()
   const [questions, setQuestions] = React.useState<QuestionType[]>([
     {
-      question: '你最喜歡的電視劇類型是什麼？',
-      options: ['劇情', '懸疑'],
-      type: QuestionTypeEnum.multiple,
-    },
-    {
-      question: '你最喜歡的運動員是誰？',
+      question: '',
       options: [],
       type: QuestionTypeEnum.fill,
-    },
-
-    {
-      question: '你最喜歡的節日是哪個？',
-      options: ['春節'],
-      type: QuestionTypeEnum.single,
     },
   ])
 
@@ -73,14 +57,36 @@ function Add({ newId, issetCodeArray }: AddProps) {
       code: newId.toString(),
       name: '活動' + newId.toString(),
       dateRange: {
-        from: new Date(),
-        to: addMonths(new Date(), 1),
+        from: (() => {
+          const date = new Date()
+          date.setHours(0, 0, 0)
+          return date
+        })(),
+        to: (() => {
+          const date = new Date()
+          date.setHours(23, 59, 59)
+          date.setMonth(date.getMonth() + 1)
+          return date
+        })(),
       },
     },
   })
+  const createCampaign = trpcClient.campaign.createCampaign.useMutation({
+    onSuccess: (id) => {
+      toast.success('新增成功')
+      router.refresh()
+      router.push(`/administrator/cati/manager/${id.toString()}/list`)
+    },
+  })
   const onSubmit = (data: z.infer<typeof campaignSchema>) => {
-    console.log(data)
+    const {
+      code,
+      name,
+      dateRange: { from: begin_date, to: end_date },
+    } = data
+    createCampaign.mutate({ code, name, begin_date, end_date, questions })
   }
+
   return (
     <>
       <Form {...form}>
@@ -142,151 +148,68 @@ function Add({ newId, issetCodeArray }: AddProps) {
               )}
             />
           </div>
-          <div className="space-y-4 ">
-            {/* {questions.map((item, questionIndex) => {
-              return (
-                <Card
-                  key={questionIndex}
-                  className="relative bg-transparent/10  p-4"
+          <DragDropContext
+            onDragEnd={(result: DropResult) => {
+              if (!result.destination) return
+              const items = Array.from(questions)
+              const [reorderedItem] = items.splice(result.source.index, 1)
+              items.splice(result.destination.index, 0, reorderedItem)
+              setQuestions(items)
+            }}
+          >
+            <StrictModeDroppable droppableId="questions">
+              {(provided) => (
+                <div
+                  className="mb-4 space-y-4"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
                 >
-                  <div className="absolute -left-1 -top-1 h-6 w-6 rounded-full border bg-primary text-center text-secondary">
-                    {questionIndex + 1}
-                  </div>
-                  <X
-                    className="absolute right-1 top-1 h-5 w-5 cursor-pointer text-secondary-foreground"
-                    onClick={() => {
-                      const newQuestions = [...questions].filter(
-                        (_, index) => index !== questionIndex,
-                      )
-                      setQuestions(newQuestions)
-                    }}
-                  />
-                  問題
-                  <div className="flex gap-2">
-                    <Input
-                      onChange={(e) => {
-                        setQuestions((prev) => {
-                          const newQuestions = [...prev]
-                          newQuestions[questionIndex].question = e.target.value
-                          return newQuestions
-                        })
-                      }}
-                      value={item.question}
-                    />
-                    <Select
-                      onValueChange={(value: QuestionTypeEnum) => {
-                        setQuestions((prev) => {
-                          const newItem = [...prev]
-                          newItem[questionIndex].type = value
-                          if (value === QuestionTypeEnum.fill) {
-                            newItem[questionIndex].options = []
-                          }
-                          return newItem
-                        })
-                      }}
-                      value={item.type}
+                  {questions.map((_, questionIndex) => (
+                    <Draggable
+                      key={questionIndex}
+                      draggableId={questionIndex.toString()}
+                      index={questionIndex}
                     >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="選擇題目類型" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value={QuestionTypeEnum.fill}>
-                            {QuestionTypeEnum.fill}
-                          </SelectItem>
-                          <SelectItem value={QuestionTypeEnum.multiple}>
-                            {QuestionTypeEnum.multiple}
-                          </SelectItem>
-                          <SelectItem value={QuestionTypeEnum.single}>
-                            {QuestionTypeEnum.single}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className=" mt-2 space-y-2">
-                    {item.type !== QuestionTypeEnum.fill &&
-                      item.options &&
-                      item.options.map((option, optionIndex) => {
-                        return (
-                          <div
-                            className="flex items-center gap-2"
-                            key={optionIndex}
-                          >
-                            <Input
-                              onChange={(e) => {
-                                setQuestions((prev) => {
-                                  const newQuestions = [...prev]
-                                  newQuestions[questionIndex].options[
-                                    optionIndex
-                                  ] = e.target.value
-
-                                  return newQuestions
-                                })
-                              }}
-                              value={option}
-                            />
-                            <Button
-                              onClick={() => {
-                                const newQuestions = [...questions]
-                                newQuestions[questionIndex].options =
-                                  newQuestions[questionIndex].options.filter(
-                                    (_, index) => index !== optionIndex,
-                                  )
-                                setQuestions(newQuestions)
-                              }}
-                              type="button"
-                              size="icon"
-                            >
-                              <X />
-                            </Button>
-                          </div>
-                        )
-                      })}
-                    {item.type !== QuestionTypeEnum.fill && (
-                      <Button
-                        onClick={() => {
-                          const newQuestions = [...questions]
-                          newQuestions[questionIndex].options = [
-                            ...newQuestions[questionIndex].options,
-                            '',
-                          ]
-                          setQuestions(newQuestions)
-                        }}
-                        className="w-full"
-                        type="button"
-                        size="icon"
-                        variant="primary"
-                      >
-                        <PlusCircle />
-                        增加選項
-                      </Button>
-                    )}
-                  </div>
-                </Card>
-              )
-            })} */}
-            <div className="flex w-full justify-center">
-              <Button
-                onClick={() => {
-                  setQuestions([
-                    ...questions,
-                    { question: '', type: QuestionTypeEnum.fill, options: [] },
-                  ])
-                }}
-                type="button"
-                // variant="primary"
-              >
-                <PlusCircle className="mr-1" />
-                增加問題
-              </Button>
-            </div>
+                      {(provided) => (
+                        <Question
+                          questionIndex={questionIndex}
+                          questions={questions}
+                          setQuestions={setQuestions}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </StrictModeDroppable>
+          </DragDropContext>
+          <div className="flex w-full justify-center">
+            <Button
+              onClick={() => {
+                setQuestions([
+                  ...questions,
+                  { question: '', type: QuestionTypeEnum.fill, options: [] },
+                ])
+              }}
+              type="button"
+              variant="primary"
+            >
+              <PlusCircle className="mr-1" />
+              增加問題
+            </Button>
           </div>
           <Button
-            variant="secondary"
-            className="mt-4 w-full bg-[#f7deb5]"
+            disabled={createCampaign.isLoading}
+            className="mt-4 w-full "
             type="submit"
           >
+            {createCampaign.isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin " />
+            )}
             送出
           </Button>
         </form>

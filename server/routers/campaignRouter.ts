@@ -37,4 +37,27 @@ export const campaignRouter = router({
 
       return true
     }),
+  createCampaign: privateProcedure
+    .input(
+      z.object({
+        code: z.string(),
+        name: z.string(),
+        questions: z.array(
+          z.object({
+            question: z.string(),
+            options: z.array(z.string()),
+            type: z.enum(['單選', '多選', '填空']),
+          }),
+        ),
+        begin_date: z.date(),
+        end_date: z.date(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const create = await prismadb.campaign.create({
+        data: input,
+      })
+      revalidatePath('/administrator/cati/manager')
+      return create.id
+    }),
 })

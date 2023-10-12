@@ -22,7 +22,7 @@ async function NewCampaignPage() {
   ).map((campaign) => campaign.code)
   return (
     <div className="space-y-4">
-      <Heading title="新增活動" description="Add your new campaign " />
+      <Heading title="新增活動" description="Add new campaign " />
       <Separator />
       <Add newId={(lastRecord?.id || 0) + 1} issetCodeArray={issetCodeArray} />
     </div>
