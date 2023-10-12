@@ -66,7 +66,7 @@ export async function generateMetadata({
   const page =
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
   const size =
-    typeof searchParams.size === 'string' ? Number(searchParams.size) : 10
+    typeof searchParams.size === 'string' ? Number(searchParams.size) : 5
   const { data } = await getTemplatePhoneById({ templateId, page, size })
 
   if (data.length === 0) {
