@@ -16,7 +16,7 @@ export type ManagerDataType = Pick<
   'id' | 'code' | 'name' | 'begin_date' | 'end_date' | 'current_active'
 >
 
-export const getAllCampaign = async () => {
+const getAllCampaign = async () => {
   const data = await prismadb.campaign.findMany({
     select: {
       id: true,

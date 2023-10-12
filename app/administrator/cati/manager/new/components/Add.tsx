@@ -1,6 +1,7 @@
 'use client'
 
 import { DatePickerWithRange } from './DateRangePicker'
+import List from './List'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -25,6 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { addMonths } from 'date-fns'
 import { PlusCircle, X } from 'lucide-react'
 import React from 'react'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { DayPickerRangeProps } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -140,16 +142,25 @@ function Add({ newId, issetCodeArray }: AddProps) {
               )}
             />
           </div>
-          <div className=" flex flex-wrap   gap-4 ">
-            {questions.map((item, questionIndex) => {
+          <div className="space-y-4 ">
+            {/* {questions.map((item, questionIndex) => {
               return (
                 <Card
                   key={questionIndex}
-                  className="relative  h-full  w-[49%] p-4"
+                  className="relative bg-transparent/10  p-4"
                 >
                   <div className="absolute -left-1 -top-1 h-6 w-6 rounded-full border bg-primary text-center text-secondary">
                     {questionIndex + 1}
                   </div>
+                  <X
+                    className="absolute right-1 top-1 h-5 w-5 cursor-pointer text-secondary-foreground"
+                    onClick={() => {
+                      const newQuestions = [...questions].filter(
+                        (_, index) => index !== questionIndex,
+                      )
+                      setQuestions(newQuestions)
+                    }}
+                  />
                   問題
                   <div className="flex gap-2">
                     <Input
@@ -248,13 +259,14 @@ function Add({ newId, issetCodeArray }: AddProps) {
                         variant="primary"
                       >
                         <PlusCircle />
+                        增加選項
                       </Button>
                     )}
                   </div>
                 </Card>
               )
-            })}
-            <div className="flex min-h-[200px] w-[500px] items-center justify-center">
+            })} */}
+            <div className="flex w-full justify-center">
               <Button
                 onClick={() => {
                   setQuestions([
@@ -263,10 +275,10 @@ function Add({ newId, issetCodeArray }: AddProps) {
                   ])
                 }}
                 type="button"
-                size="icon"
-                variant="primary"
+                // variant="primary"
               >
-                <PlusCircle />
+                <PlusCircle className="mr-1" />
+                增加問題
               </Button>
             </div>
           </div>
