@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "clean": "rm -rf .next",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "prepare": "husky install",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
@@ -98,5 +98,10 @@
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^3.12.10",
     "typescript": "5.2.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --fix ."
+    ]
   }
 }

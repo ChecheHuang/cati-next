@@ -63,7 +63,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={onConfirm}
-        loading={deleteByTemplateId.isLoading}
+        isLoading={deleteByTemplateId.isLoading}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -139,7 +139,6 @@ export const columns: ColumnDef<TemplatePhoneColumn>[] = [
         </Button>
       )
     },
-
     cell: ({ row }) => (
       <div className=" text-center">{row.getValue('templateId')}</div>
     ),

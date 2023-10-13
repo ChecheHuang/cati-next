@@ -58,6 +58,35 @@ export const campaignRouter = router({
         data: input,
       })
       revalidatePath('/administrator/cati/manager')
+      revalidatePath('/administrator/cati/templatephone')
+
       return create.id
+    }),
+  updateCampaign: privateProcedure
+    .input(
+      z.object({
+        campaignId: z.string(),
+        code: z.string(),
+        name: z.string(),
+        questions: z.array(
+          z.object({
+            question: z.string(),
+            options: z.array(z.string()),
+            type: z.enum(['單選', '多選', '填空']),
+          }),
+        ),
+        begin_date: z.date(),
+        end_date: z.date(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { campaignId, ...data } = input
+      await prismadb.campaign.update({
+        where: { id: parseInt(campaignId) },
+        data,
+      })
+      revalidatePath('/administrator/cati/manager')
+      revalidatePath('/administrator/cati/templatephone')
+      return
     }),
 })

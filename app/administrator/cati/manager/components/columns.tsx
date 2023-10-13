@@ -2,16 +2,34 @@
 
 import { ManagerDataType } from '../page'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import trpcClient from '@/lib/trpc/trpcClient'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { ArrowUpDown } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export const columns: ColumnDef<ManagerDataType>[] = [
   {
     accessorKey: 'id',
-    header: 'ID',
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => {
+            const isSorted = column.getIsSorted()
+            if (!isSorted) return column.toggleSorting(true)
+            column.toggleSorting(isSorted === 'asc')
+          }}
+        >
+          ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className=" text-center">{row.getValue('id')}</div>,
   },
   {
     accessorKey: 'code',
@@ -88,18 +106,18 @@ const CellAction = ({ data }: { data: ManagerDataType }) => {
 
       <Badge
         variant="outline"
-        className="text-md cursor-pointer whitespace-nowrap  text-yellow-300 hover:text-yellow-600 dark:hover:text-yellow-200"
+        className="text-md cursor-pointer whitespace-nowrap  text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-200"
       >
-        <Link href={`/administrator/cati/manager/${data.code}/activity`}>
-          管理活動
+        <Link href={`/administrator/cati/manager/${data.id}/activity`}>
+          活動管理
         </Link>
       </Badge>
       <Badge
         variant="outline"
         className="text-md cursor-pointer whitespace-nowrap  text-blue-600 hover:text-blue-800 dark:hover:text-blue-400"
       >
-        <Link href={`/administrator/cati/manager/${data.code}/list`}>
-          管理名單
+        <Link href={`/administrator/cati/manager/${data.id}/list`}>
+          名單管理
         </Link>
       </Badge>
     </div>

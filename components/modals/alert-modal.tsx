@@ -8,29 +8,35 @@ interface AlertModalProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
-  loading: boolean
+  isLoading: boolean
+  title?: string
+  description?: string
+  confirmButtonText?: string
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  loading,
+  isLoading,
+  title = '確認刪除嗎',
+  description = '這個操作不可回復',
+  confirmButtonText = '刪除',
 }) => {
   return (
     <Modal
-      title="確認刪除嗎?"
-      description="這個操作不可回復"
+      title={title}
+      description={description}
       isOpen={isOpen}
       onClose={onClose}
     >
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
-        <Button disabled={loading} variant="outline" onClick={onClose}>
+        <Button disabled={isLoading} variant="outline" onClick={onClose}>
           取消
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          {loading && <Loader2 className="mr-2 h-6 w-6 animate-spin " />}
-          刪除
+        <Button disabled={isLoading} variant="destructive" onClick={onConfirm}>
+          {isLoading && <Loader2 className="mr-2 h-6 w-6 animate-spin " />}
+          {confirmButtonText}
         </Button>
       </div>
     </Modal>

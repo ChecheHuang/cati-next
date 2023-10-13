@@ -1,30 +1,20 @@
+import getIssetCodeArray from '../actions/getIssetCodeArray'
 import Add from './components/Add'
+import PrevButton from '@/components/PrevButton'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
-import prismadb from '@/lib/prismadb'
 import React from 'react'
 
 async function NewCampaignPage() {
-  const lastRecord = await prismadb.campaign.findFirst({
-    select: {
-      id: true,
-    },
-    orderBy: {
-      id: 'desc',
-    },
-  })
-  const issetCodeArray = (
-    await prismadb.campaign.findMany({
-      select: {
-        code: true,
-      },
-    })
-  ).map((campaign) => campaign.code)
+  const issetCodeArray = await getIssetCodeArray()
   return (
     <div className="space-y-4">
-      <Heading title="新增活動" description="Add new campaign " />
+      <div className="flex items-center justify-between">
+        <Heading title="新增活動" description="Add new campaign " />
+        <PrevButton />
+      </div>
       <Separator />
-      <Add newId={(lastRecord?.id || 0) + 1} issetCodeArray={issetCodeArray} />
+      <Add issetCodeArray={issetCodeArray} />
     </div>
   )
 }

@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import React from 'react'
 
 function Home() {
-  return <div>Home</div>
+  return <Link href="administrator/login">login</Link>
 }
 
 export default Home

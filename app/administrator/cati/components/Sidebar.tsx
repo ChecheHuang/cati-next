@@ -22,10 +22,10 @@ export function Sidebar({ className }: SidebarProps) {
       ],
     },
     {
-      title: '活動管理',
+      title: '活動狀態',
       items: [
         {
-          label: '活動管理',
+          label: '活動狀態',
           icon: FileAudio,
           href: '/administrator/cati/manager',
         },
