@@ -2,11 +2,14 @@ import getAllCampaign from '../../actions/getAllCampaign'
 import getIssetCodeArray from '../../actions/getIssetCodeArray'
 import Edit from './components/Edit'
 import PrevButton from '@/components/PrevButton'
+import { buttonVariants } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import prismadb from '@/lib/prismadb'
+import { cn } from '@/lib/utils'
 import { QuestionType } from '@/types/questions'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
@@ -64,7 +67,15 @@ async function ActivityPage({ params: { campaignId } }: ActivityPageProps) {
             (campaignData?.code || '') + '-' + (campaignData?.name || '')
           }
         />
-        <PrevButton />
+        <div className="flex gap-2">
+          <Link
+            href={`/administrator/cati/manager/${campaignId}/list`}
+            className={cn(buttonVariants())}
+          >
+            名單管理
+          </Link>
+          <PrevButton />
+        </div>
       </div>
       <Separator />
       <Edit

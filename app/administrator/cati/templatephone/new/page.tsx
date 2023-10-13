@@ -4,9 +4,7 @@ import React from 'react'
 
 async function Page() {
   const data = await getAllTemplatePhone()
-  const newTemplateId = (
-    parseInt(data[data.length - 1].templateId) + 1
-  ).toString()
+  const newTemplateId = data[data.length - 1].templateId + 1
   const rejectNameArray = data.map(({ templateName }) => templateName)
   return (
     <div>

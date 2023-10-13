@@ -10,7 +10,7 @@ function CreateForm({
   templateId,
   rejectNameArray,
 }: {
-  templateId: string
+  templateId: number
   rejectNameArray: string[]
 }) {
   const [newTemplateName, setNewTemplateName] = useState<string | null>(null)

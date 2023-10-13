@@ -24,7 +24,7 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 
 export type TemplatePhoneColumn = {
-  templateId: string
+  templateId: number
   templateName: string
   count: number
   createdAt: Date

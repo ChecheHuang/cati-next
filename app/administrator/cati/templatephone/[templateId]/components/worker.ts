@@ -10,7 +10,7 @@ self.onmessage = function (event) {
 }
 
 function formatFn(data: {
-  templateId: string
+  templateId: number
   templateName: string
   excelData: Record<string, any>[]
 }) {

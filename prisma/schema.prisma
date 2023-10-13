@@ -36,7 +36,7 @@ model Campaign {
 
 model Phone_template {
   id            Int     @id @default(autoincrement())
-  template_id   String
+  template_id   Int
   template_name String
   name          String
   phone         String
@@ -51,19 +51,22 @@ model Phone_template {
 }
 
 model Name_list {
-  id                Int      @id @default(autoincrement())
+  id                Int    @id @default(autoincrement())
   campaign_id       Int
   phone_template_id Int
+  template_id       Int
   name              String
   phone             String
-  agent             String?
-  answers           Json
-  sort              Int?
-  reserve_date      DateTime
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  sort              Int
 
-  campaign       Campaign       @relation("CampaignNameList", fields: [campaign_id], references: [id])
+  answers      Json?
+  agent        String?
+  reserve_date DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  campaign       Campaign       @relation("CampaignNameList", fields: [campaign_id], references: [id], onDelete: Cascade)
   phone_template Phone_template @relation("NameListPhoneTemplate", fields: [phone_template_id], references: [id])
 
   @@index([campaign_id])

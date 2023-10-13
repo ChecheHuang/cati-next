@@ -4,7 +4,7 @@ import { usePhoneModal } from '../../components/PhoneModal'
 import { Button } from '@/components/ui/button'
 
 interface OpenAddActiveModalButtonProps {
-  templateId: string
+  templateId: number
 }
 
 const OpenAddActiveModalButton: React.FC<OpenAddActiveModalButtonProps> = ({

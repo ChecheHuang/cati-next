@@ -32,7 +32,7 @@ const getTemplatePhoneById = async ({
   page,
   size,
 }: {
-  templateId: string
+  templateId: number
   page?: number | undefined
   size?: number | undefined
 }) => {
@@ -67,7 +67,11 @@ export async function generateMetadata({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
   const size =
     typeof searchParams.size === 'string' ? Number(searchParams.size) : 5
-  const { data } = await getTemplatePhoneById({ templateId, page, size })
+  const { data } = await getTemplatePhoneById({
+    templateId: parseInt(templateId),
+    page,
+    size,
+  })
 
   if (data.length === 0) {
     return {
@@ -87,7 +91,11 @@ async function TemplatePhoneByIdPage({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
   const size =
     typeof searchParams.size === 'string' ? Number(searchParams.size) : 5
-  const { data, total } = await getTemplatePhoneById({ templateId, page, size })
+  const { data, total } = await getTemplatePhoneById({
+    templateId: parseInt(templateId),
+    page,
+    size,
+  })
   const lastPage = Math.ceil(total / size)
   const firstPagePath = `/administrator/cati/templatephone/${templateId}?page=1`
   const lastPagePath = `/administrator/cati/templatephone/${templateId}?page=${lastPage}`
@@ -105,9 +113,9 @@ async function TemplatePhoneByIdPage({
         <Heading title={data[0]?.template_name} />
 
         <div className="flex gap-2">
-          <OpenAddActiveModalButton templateId={templateId} />
+          <OpenAddActiveModalButton templateId={parseInt(templateId)} />
           <UploadButton
-            templateId={templateId}
+            templateId={parseInt(templateId)}
             templateName={data[0]?.template_name}
             redirectPath={`${templateId}?page=${lastPage}`}
           />
@@ -177,7 +185,11 @@ async function TemplatePhoneByIdPage({
                 <ValidSwitch id={id} checked={valid} />
               </TableCell>
               <TableCell>
-                <DeleteButton templateId={templateId} id={id} page={page} />
+                <DeleteButton
+                  templateId={parseInt(templateId)}
+                  id={id}
+                  page={page}
+                />
               </TableCell>
             </TableRow>
           ))}

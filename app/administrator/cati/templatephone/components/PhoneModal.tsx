@@ -13,11 +13,11 @@ import { create } from 'zustand'
 
 interface usePhoneModalStore {
   isOpen: boolean
-  onOpen: (templateIdArray: string[]) => void
+  onOpen: (templateIdArray: number[]) => void
   onClose: () => void
   setCampaignId: (campaign_id: string) => void
   campaign_id: string
-  phone_template_id: string[]
+  phone_template_id: number[]
 }
 
 export const usePhoneModal = create<usePhoneModalStore>((set) => ({

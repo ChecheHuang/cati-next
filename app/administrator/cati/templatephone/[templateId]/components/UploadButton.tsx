@@ -25,7 +25,7 @@ function UploadButton({
   disabled = false,
   redirectPath,
 }: {
-  templateId: string
+  templateId: number
   templateName: string
   disabled?: boolean
   redirectPath?: string

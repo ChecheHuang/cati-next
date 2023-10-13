@@ -17,7 +17,7 @@ export const templatePhoneRouter = router({
     .input(
       z.array(
         z.object({
-          template_id: z.string(),
+          template_id: z.number(),
           template_name: z.string(),
           phone: z.string(),
           name: z.string(),
@@ -71,7 +71,7 @@ export const templatePhoneRouter = router({
     }),
   delete: privateProcedure
     .input(
-      z.object({ id: z.number(), page: z.number(), templateId: z.string() }),
+      z.object({ id: z.number(), page: z.number(), templateId: z.number() }),
     )
     .mutation(async ({ input: { id, page, templateId } }) => {
       await prismadb.phone_template.delete({
@@ -92,7 +92,7 @@ export const templatePhoneRouter = router({
       return { redirectPage }
     }),
   deleteByTemplateId: privateProcedure
-    .input(z.string())
+    .input(z.number())
     .mutation(async ({ input }) => {
       await prismadb.phone_template.deleteMany({
         where: {

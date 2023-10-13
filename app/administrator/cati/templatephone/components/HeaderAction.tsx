@@ -16,7 +16,7 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 
 interface HeaderActionProps {
-  selectedTemplateIdArray: string[]
+  selectedTemplateIdArray: number[]
   selectReset: () => void
 }
 

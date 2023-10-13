@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 interface DeleteButtonProps {
   id: number
   page: number
-  templateId: string
+  templateId: number
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({

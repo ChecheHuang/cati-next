@@ -1,10 +1,13 @@
 import getAllCampaign from '../../actions/getAllCampaign'
 import PrevButton from '@/components/PrevButton'
+import { buttonVariants } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import prismadb from '@/lib/prismadb'
+import { cn } from '@/lib/utils'
 import { QuestionType } from '@/types/questions'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
@@ -24,22 +27,30 @@ export async function generateMetadata({
 }
 
 const getCampaignById = async (id: number) => {
-  const origin = await prismadb.campaign.findUnique({
+  const data = await prismadb.campaign.findUnique({
     where: {
       id,
     },
-  })
-  if (!origin) return null
-  const { code, name, questions, begin_date, end_date } = origin
-  return {
-    code,
-    name,
-    dateRange: {
-      from: begin_date,
-      to: end_date,
+    select: {
+      code: true,
+      name: true,
+      name_list: {
+        select: {
+          sort: true,
+          phone_template: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
-    questions: questions as QuestionType[],
-  }
+  })
+  console.log(data)
+  const campaignPhone: any =
+    await prismadb.$queryRaw`select sort,template_name, count(*) as count from name_list join phone_template on name_list.phone_template_id = phone_template.id where campaign_id = ${id} group by sort,template_name;`
+  if (!data) return null
+  return data
 }
 
 async function ListPage({ params: { campaignId } }: ListPageProps) {
@@ -54,7 +65,16 @@ async function ListPage({ params: { campaignId } }: ListPageProps) {
             (campaignData?.code || '') + '-' + (campaignData?.name || '')
           }
         />
-        <PrevButton />
+        <div className="flex gap-2">
+          <Link
+            href={`/administrator/cati/manager/${campaignId}/activity`}
+            className={cn(buttonVariants())}
+          >
+            活動管理
+          </Link>
+
+          <PrevButton />
+        </div>
       </div>
       <Separator />
     </div>

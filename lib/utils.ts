@@ -10,6 +10,8 @@ export const wait = (time: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, time)
   })
+export const getRandomNumber = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
 
 export const readExcel = (file: File) =>
   new Promise((resolve, reject) => {
