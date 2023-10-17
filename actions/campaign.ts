@@ -83,5 +83,13 @@ export const getIssetTemplatePhoneByCampaignId = async (id: number) => {
       },
     },
   })
-  console.log(data)
+  const map: AnyObject = {}
+  const result = data?.name_list.reduce((acc, { template_id }) => {
+    if (!map[template_id]) {
+      map[template_id] = true
+      acc.push(template_id)
+    }
+    return acc
+  }, [] as number[])
+  return result
 }
