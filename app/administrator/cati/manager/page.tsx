@@ -1,5 +1,5 @@
-import getAllCampaign from './actions/getAllCampaign'
 import { columns } from './components/columns'
+import { getAllCampaign } from '@/actions/campaign'
 import { buttonVariants } from '@/components/ui/button'
 import DataTable from '@/components/ui/data-table'
 import { Heading } from '@/components/ui/heading'
@@ -11,7 +11,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 
-export const revalidate = 0
+// export const revalidate = 0
 export const metadata: Metadata = {
   title: '活動狀態',
   description: '電訪系統活動狀態',
@@ -24,6 +24,7 @@ export type ManagerDataType = Pick<
 
 async function Manager() {
   const data = await getAllCampaign()
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 ">

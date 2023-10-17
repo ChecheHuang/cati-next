@@ -20,17 +20,21 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   const router = useRouter()
 
   const deleteMutate = trpcClient.templatePhone.delete.useMutation({
-    onSuccess: ({ redirectPage }) => {
-      router.push(`?page=${redirectPage}`)
-      router.refresh()
-      toast.success('刪除成功')
+    onSuccess: (result) => {
+      if (result) {
+        router.push(`?page=${result.redirectPage}`)
+        router.refresh()
+        toast.success('刪除成功')
+      }
     },
   })
 
   return (
     <Button
       disabled={deleteMutate.isLoading}
-      onClick={() => deleteMutate.mutate({ id, page, templateId })}
+      onClick={() => {
+        deleteMutate.mutate({ id, page, templateId })
+      }}
       variant="primary"
       size="sm"
     >

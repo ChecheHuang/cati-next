@@ -1,27 +1,8 @@
 import TemplatePhoneClient from './components/TemplatePhone'
-import prismadb from '@/lib/prismadb'
+import { getAllTemplatePhone } from '@/actions/phone_template'
 import type { Metadata } from 'next'
 
 export const revalidate = 0
-
-export const getAllTemplatePhone = async () => {
-  const data = await prismadb.phone_template.groupBy({
-    by: ['template_id', 'template_name'],
-    _count: true,
-    _min: {
-      created_at: true,
-    },
-    orderBy: {
-      template_id: 'asc',
-    },
-  })
-  return data.map((item) => ({
-    templateId: item.template_id,
-    templateName: item.template_name,
-    count: item._count,
-    createdAt: item._min.created_at as Date,
-  }))
-}
 
 export const metadata: Metadata = {
   title: '電話簿管理',

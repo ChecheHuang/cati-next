@@ -1,28 +1,25 @@
-'use client'
+'use client';
 
-import { Icons } from '@/components/icons'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
-import * as React from 'react'
+import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ColumnDef, ColumnFiltersState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import * as React from 'react';
+import { useUpdateEffect } from 'usehooks-ts';
+import { create } from 'zustand';
+
+
+interface useTable {
+  rowSelectArray: number[]
+  setRowSelectArray: (rowSelectArray: number[]) => void
+}
+export const useTable = create<useTable>((set) => ({
+  rowSelectArray: [],
+  setRowSelectArray: (rowSelectArray) => {
+    set({ rowSelectArray })
+  },
+}))
 
 interface DataTableProps<T extends Record<string, any>> {
   columns: ColumnDef<T>[]
@@ -42,6 +39,21 @@ function DataTable<T extends Record<string, any>>({
     [],
   )
   const [rowSelection, setRowSelection] = React.useState({})
+  const { setRowSelectArray, rowSelectArray } = useTable()
+  useUpdateEffect(() => {
+    const obj = rowSelectArray.reduce(
+      (acc, curr) => {
+        acc[curr] = true
+        return acc
+      },
+      {} as Record<number, boolean>,
+    )
+    setRowSelection(obj)
+  }, [JSON.stringify(rowSelectArray)])
+  useUpdateEffect(() => {
+    const numberArray = Object.keys(rowSelection).map(Number)
+    setRowSelectArray(numberArray)
+  }, [JSON.stringify(rowSelection)])
   const [pagination, setPagination] = React.useState<{
     pageSize: number
     pageIndex: number

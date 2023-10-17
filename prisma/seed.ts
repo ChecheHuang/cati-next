@@ -21,8 +21,8 @@ const reset = async () => {
   await prisma.$queryRaw`ALTER TABLE name_list AUTO_INCREMENT = 1;`
 }
 const phoneTemplateSeed = async () => {
-  const idLength = 6
-  const dataRandomLength = 50
+  const idLength = 10
+  const dataRandomLength = 500
   const generateUniquePhoneNumber = generatePhoneNumber()
 
   const templateData = []
@@ -32,13 +32,12 @@ const phoneTemplateSeed = async () => {
 
   for (const template_id of ids) {
     const idDataLength = Math.floor(Math.random() * dataRandomLength) + 1
-    const template_name = fakerZH_TW.company.name()
     for (let i = 0; i < idDataLength; i++) {
       const name = fakerZH_TW.person.fullName()
       const phone = generateUniquePhoneNumber()
       templateData.push({
         template_id,
-        template_name,
+        template_name: 'template_name' + template_id.toString(),
         name,
         phone,
       })
@@ -89,7 +88,7 @@ const nameListSeed = async () => {
 
   for (const campaign_id of campaignArr) {
     for (let template_id = 1; template_id < maxTemplateId + 1; template_id++) {
-      if (Math.random() < 0.5) continue
+      // if (Math.random() < 0.5) continue
       const phoneTemplateData = await prismadb.phone_template.findMany({
         select: { id: true, template_id: true, name: true, phone: true },
         where: {

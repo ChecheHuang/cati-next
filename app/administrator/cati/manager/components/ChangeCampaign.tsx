@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { QuestionType, QuestionTypeEnum } from '@/types/questions'
 import { DragDropContext, Draggable, DropResult } from '@hello-pangea/dnd'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, PlusCircle } from 'lucide-react'
+import { PlusCircle } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { DayPickerRangeProps } from 'react-day-picker'
 import { useForm } from 'react-hook-form'
@@ -215,8 +215,12 @@ function ChangeCampaign({
               增加問題
             </Button>
           </div>
-          <Button disabled={isLoading} className="mt-4 w-full " type="submit">
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin " />}
+          <Button
+            disabled={isLoading}
+            isLoading={isLoading}
+            className="mt-4 w-full "
+            type="submit"
+          >
             送出
           </Button>
         </form>

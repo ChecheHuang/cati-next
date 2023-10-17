@@ -40,6 +40,7 @@ function UploadButton({
       const lastPage = result?.lastPage
       toast.success('修改成功')
       setIsModalOpen(false)
+      router.refresh()
       if (redirectPath) router.push(redirectPath)
       router.push(`${templateId}?page=${lastPage}`)
     },

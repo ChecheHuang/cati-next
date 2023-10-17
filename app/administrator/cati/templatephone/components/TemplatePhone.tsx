@@ -1,6 +1,7 @@
 'use client'
 
 import { TemplatePhoneColumn, columns } from './columns'
+import PrevButton from '@/components/PrevButton'
 import { buttonVariants } from '@/components/ui/button'
 import DataTable from '@/components/ui/data-table'
 // import { DataTable } from '@/components/ui/data-table'
@@ -19,12 +20,15 @@ const TemplatePhone: React.FC<TemplatePhoneProps> = ({ data }) => {
     <div className=" space-y-2">
       <div className="flex items-center justify-between">
         <Heading title="電話簿管理" description="Manage your phone book" />
-        <Link
-          className={cn(buttonVariants())}
-          href={`/administrator/cati/templatephone/new`}
-        >
-          <Plus className="mr-2 h-4 w-4" /> 新增電話簿
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            className={cn(buttonVariants())}
+            href={`/administrator/cati/templatephone/new`}
+          >
+            <Plus className="mr-2 h-4 w-4" /> 新增電話簿
+          </Link>
+          <PrevButton />
+        </div>
       </div>
       <Separator />
       <DataTable

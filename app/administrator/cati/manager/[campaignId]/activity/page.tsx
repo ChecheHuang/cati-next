@@ -1,6 +1,5 @@
-import getAllCampaign from '../../actions/getAllCampaign'
-import getIssetCodeArray from '../../actions/getIssetCodeArray'
 import Edit from './components/Edit'
+import getIssetCodeArray, { getAllCampaign } from '@/actions/campaign'
 import PrevButton from '@/components/PrevButton'
 import { buttonVariants } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -8,6 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import prismadb from '@/lib/prismadb'
 import { cn } from '@/lib/utils'
 import { QuestionType } from '@/types/questions'
+import { ArrowLeft } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -72,6 +72,7 @@ async function ActivityPage({ params: { campaignId } }: ActivityPageProps) {
             href={`/administrator/cati/manager/${campaignId}/list`}
             className={cn(buttonVariants())}
           >
+            <ArrowLeft className="mr-2 h-4 w-4" />
             名單管理
           </Link>
           <PrevButton />

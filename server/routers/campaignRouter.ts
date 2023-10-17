@@ -1,7 +1,5 @@
 import { router, publicProcedure, privateProcedure } from '../trpc'
 import prismadb from '@/lib/prismadb'
-import { Prisma } from '@prisma/client'
-import { TRPCError } from '@trpc/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
@@ -57,8 +55,11 @@ export const campaignRouter = router({
       const create = await prismadb.campaign.create({
         data: input,
       })
-      revalidatePath('/administrator/cati/manager')
-      revalidatePath('/administrator/cati/templatephone')
+      revalidatePath(`/administrator/cati/manager`, 'page')
+      revalidatePath(
+        `/administrator/cati/manager/[campaignId]/activity`,
+        'page',
+      )
 
       return create.id
     }),
@@ -85,8 +86,11 @@ export const campaignRouter = router({
         where: { id: parseInt(campaignId) },
         data,
       })
-      revalidatePath('/administrator/cati/manager')
-      revalidatePath('/administrator/cati/templatephone')
+      revalidatePath(`/administrator/cati/manager`, 'page')
+      revalidatePath(
+        `/administrator/cati/manager/[campaignId]/activity`,
+        'page',
+      )
       return
     }),
 })

@@ -1,6 +1,8 @@
-import { getAllTemplatePhone } from '../page'
 import CreateForm from './components/CreateForm'
+import { getAllTemplatePhone } from '@/actions/phone_template'
 import React from 'react'
+
+export const revalidate = 0
 
 async function Page() {
   const data = await getAllTemplatePhone()

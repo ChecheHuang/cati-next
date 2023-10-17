@@ -67,7 +67,7 @@ model Name_list {
   updated_at DateTime @updatedAt
 
   campaign       Campaign       @relation("CampaignNameList", fields: [campaign_id], references: [id], onDelete: Cascade)
-  phone_template Phone_template @relation("NameListPhoneTemplate", fields: [phone_template_id], references: [id])
+  phone_template Phone_template @relation("NameListPhoneTemplate", fields: [phone_template_id], references: [id], onDelete: Cascade)
 
   @@index([campaign_id])
   @@index([phone_template_id])

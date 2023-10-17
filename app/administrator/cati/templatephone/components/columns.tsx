@@ -149,7 +149,7 @@ export const columns: ColumnDef<TemplatePhoneColumn>[] = [
     cell: ({ row }) => {
       return (
         <Link
-          className={cn(buttonVariants({ variant: 'link' }))}
+          className={cn(buttonVariants({ variant: 'primary' }))}
           href={`/administrator/cati/templatephone/${row.original.templateId}`}
         >
           {row?.original?.templateName}

@@ -48,7 +48,8 @@ export const templatePhoneRouter = router({
             where: { template_id: input[0].template_id },
           })) / 5,
         )
-        revalidatePath('/administrator/cati/templatephone')
+        revalidatePath('/administrator/cati/templatephone', 'page')
+        revalidatePath('/administrator/cati/templatephone/new', 'page')
         return { lastPage: lastPage.toString() }
       } catch (err) {
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -69,29 +70,33 @@ export const templatePhoneRouter = router({
       })
       revalidatePath('/administrator/cati/templatephone')
     }),
-  delete: privateProcedure
+  delete: publicProcedure
     .input(
       z.object({ id: z.number(), page: z.number(), templateId: z.number() }),
     )
     .mutation(async ({ input: { id, page, templateId } }) => {
-      await prismadb.phone_template.delete({
-        where: {
-          id,
-        },
-      })
-      const lastPage = Math.ceil(
-        (await prismadb.phone_template.count({
+      try {
+        await prismadb.phone_template.delete({
           where: {
-            template_id: templateId,
+            id,
           },
-        })) / 5,
-      )
-      const redirectPage =
-        page > lastPage ? lastPage.toString() : page.toString()
-      revalidatePath('/administrator/cati/templatephone')
-      return { redirectPage }
+        })
+        const lastPage = Math.ceil(
+          (await prismadb.phone_template.count({
+            where: {
+              template_id: templateId,
+            },
+          })) / 5,
+        )
+        const redirectPage =
+          page > lastPage ? lastPage.toString() : page.toString()
+        revalidatePath('/administrator/cati/templatephone', 'page')
+        return { redirectPage }
+      } catch (err) {
+        console.log(err)
+      }
     }),
-  deleteByTemplateId: privateProcedure
+  deleteByTemplateId: publicProcedure
     .input(z.number())
     .mutation(async ({ input }) => {
       await prismadb.phone_template.deleteMany({
@@ -99,6 +104,6 @@ export const templatePhoneRouter = router({
           template_id: input,
         },
       })
-      revalidatePath('/administrator/cati/templatephone')
+      revalidatePath('/administrator/cati/templatephone', 'page')
     }),
 })

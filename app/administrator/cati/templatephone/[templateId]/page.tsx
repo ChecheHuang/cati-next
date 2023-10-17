@@ -1,8 +1,12 @@
-import { getAllTemplatePhone } from '../page'
 import DeleteButton from './components/DeleteButton'
 import OpenAddActiveModalButton from './components/OpenAddActiveModalButton'
 import UploadButton from './components/UploadButton'
 import ValidSwitch from './components/ValidSwitch'
+import {
+  getAllTemplatePhone,
+  getTemplatePhoneById,
+} from '@/actions/phone_template'
+import PrevButton from '@/components/PrevButton'
 import { Icons } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
@@ -15,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import prismadb from '@/lib/prismadb'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -25,38 +28,6 @@ interface TemplatePhoneByIdPageProps {
     templateId: string
   }
   searchParams: { [key: string]: string | string[] | undefined }
-}
-
-const getTemplatePhoneById = async ({
-  templateId,
-  page,
-  size,
-}: {
-  templateId: number
-  page?: number | undefined
-  size?: number | undefined
-}) => {
-  let option
-  if (page && size) {
-    option = {
-      skip: (page - 1) * size,
-      take: size,
-    }
-  } else {
-    option = {}
-  }
-  const data = await prismadb.phone_template.findMany({
-    where: {
-      template_id: templateId,
-    },
-    ...option,
-  })
-  const total = await prismadb.phone_template.count({
-    where: {
-      template_id: templateId,
-    },
-  })
-  return { data, total }
 }
 
 export async function generateMetadata({
@@ -119,6 +90,7 @@ async function TemplatePhoneByIdPage({
             templateName={data[0]?.template_name}
             redirectPath={`${templateId}?page=${lastPage}`}
           />
+          <PrevButton />
         </div>
       </div>
       <Table>

@@ -1,11 +1,17 @@
-import getAllCampaign from '../../actions/getAllCampaign'
+import ActionButton from './components/ActionButton'
+import TotalPhoneList from './components/TotalPhoneList'
+import {
+  getAllCampaign,
+  getCampaignById,
+  getIssetTemplatePhoneByCampaignId,
+} from '@/actions/campaign'
+import { getAllTemplatePhone } from '@/actions/phone_template'
 import PrevButton from '@/components/PrevButton'
 import { buttonVariants } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
-import prismadb from '@/lib/prismadb'
 import { cn } from '@/lib/utils'
-import { QuestionType } from '@/types/questions'
+import { ArrowLeft } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -16,6 +22,8 @@ interface ListPageProps {
     campaignId: string
   }
 }
+// export const revalidate = 0
+
 export async function generateMetadata({
   params: { campaignId },
 }: ListPageProps): Promise<Metadata> {
@@ -26,35 +34,10 @@ export async function generateMetadata({
   }
 }
 
-const getCampaignById = async (id: number) => {
-  const data = await prismadb.campaign.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      code: true,
-      name: true,
-      name_list: {
-        select: {
-          sort: true,
-          phone_template: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  })
-  console.log(data)
-  const campaignPhone: any =
-    await prismadb.$queryRaw`select sort,template_name, count(*) as count from name_list join phone_template on name_list.phone_template_id = phone_template.id where campaign_id = ${id} group by sort,template_name;`
-  if (!data) return null
-  return data
-}
-
 async function ListPage({ params: { campaignId } }: ListPageProps) {
   const campaignData = await getCampaignById(parseInt(campaignId))
+  const allTemplatePhone = await getAllTemplatePhone()
+  const data = await getIssetTemplatePhoneByCampaignId(parseInt(campaignId))
   if (campaignData === null) return notFound()
   return (
     <div className="space-y-4">
@@ -66,17 +49,22 @@ async function ListPage({ params: { campaignId } }: ListPageProps) {
           }
         />
         <div className="flex gap-2">
+          <ActionButton
+            campaignId={parseInt(campaignId)}
+            allTemplatePhone={allTemplatePhone}
+          />
           <Link
             href={`/administrator/cati/manager/${campaignId}/activity`}
             className={cn(buttonVariants())}
           >
+            <ArrowLeft className="mr-2 h-4 w-4" />
             活動管理
           </Link>
-
           <PrevButton />
         </div>
       </div>
       <Separator />
+      <TotalPhoneList totalPhoneList={campaignData?.totalPhoneList} />
     </div>
   )
 }
