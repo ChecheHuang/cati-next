@@ -37,7 +37,7 @@ export const getCampaignById = async (id: number) => {
   from name_list
   join phone_template on name_list.phone_template_id = phone_template.id
   where campaign_id = ${id}
-  group by sort, template_name;
+  group by sort, template_name,template_id;
 `
   return {
     ...data,
@@ -83,5 +83,13 @@ export const getIssetTemplatePhoneByCampaignId = async (id: number) => {
       },
     },
   })
-  console.log(data)
+  const map: AnyObject = {}
+  const result = data?.name_list.reduce((acc, { template_id }) => {
+    if (!map[template_id]) {
+      map[template_id] = true
+      acc.push(template_id)
+    }
+    return acc
+  }, [] as number[])
+  return result
 }

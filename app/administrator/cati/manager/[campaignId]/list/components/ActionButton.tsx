@@ -17,7 +17,7 @@ import { toast } from 'react-toastify'
 
 interface ActionButtonProps {
   campaignId: number
-  allTemplatePhone: {
+  templatePhones: {
     templateId: number
     templateName: string
     count: number
@@ -27,7 +27,7 @@ interface ActionButtonProps {
 
 const ActionButton: React.FC<ActionButtonProps> = ({
   campaignId,
-  allTemplatePhone,
+  templatePhones,
 }) => {
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(true)
@@ -45,7 +45,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     })
   const handleAdd = () => {
     const transformData = rowSelectArray.map((ArrayIndex) => {
-      return allTemplatePhone[ArrayIndex]
+      return templatePhones[ArrayIndex]
     })
     console.log(transformData)
     setRowSelectArray([0, 2])
@@ -64,7 +64,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           placeholder="搜尋電話簿"
           searchKey="templateName"
           columns={columns}
-          data={allTemplatePhone}
+          data={templatePhones}
         />
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button onClick={() => setIsModalOpen(false)} variant="outline">

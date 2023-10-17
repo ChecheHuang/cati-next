@@ -37,7 +37,14 @@ export async function generateMetadata({
 async function ListPage({ params: { campaignId } }: ListPageProps) {
   const campaignData = await getCampaignById(parseInt(campaignId))
   const allTemplatePhone = await getAllTemplatePhone()
-  const data = await getIssetTemplatePhoneByCampaignId(parseInt(campaignId))
+  const issetTemplatePhoneIdArray = await getIssetTemplatePhoneByCampaignId(
+    parseInt(campaignId),
+  )
+  const templatePhones = allTemplatePhone.filter(
+    (templatePhone) =>
+      !issetTemplatePhoneIdArray?.some((id) => id === templatePhone.templateId),
+  )
+
   if (campaignData === null) return notFound()
   return (
     <div className="space-y-4">
@@ -51,7 +58,7 @@ async function ListPage({ params: { campaignId } }: ListPageProps) {
         <div className="flex gap-2">
           <ActionButton
             campaignId={parseInt(campaignId)}
-            allTemplatePhone={allTemplatePhone}
+            templatePhones={templatePhones}
           />
           <Link
             href={`/administrator/cati/manager/${campaignId}/activity`}
